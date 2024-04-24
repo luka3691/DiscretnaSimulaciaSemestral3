@@ -1,0 +1,20 @@
+ABACore 2.1, 2017-04-20
+------------------------
+- Správy notice posielané kontinuálnym asistentom su vdy posielané jeho agentovi
+
+ABACore 2.2, 2020-05-05
+------------------------
+- Zrıchlenie práce s dynamickımi agentami
+
+ABACore 2.3, 2023-04-26
+------------------------
+- CommonAgent - volanie ClearMailBox pred PrepareReplication v metóde PrepareReplication
+
+ABACore 2.4, 2023-05-05
+------------------------
+- replikácia bude konèi po dosiahnutí poadovaného èasu vdy
+- pridanie updateAfterReplication do WStat
+
+ABACore 3.0, 2024-04-16
+------------------------
+- novı animátor
