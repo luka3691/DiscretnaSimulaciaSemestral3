@@ -2,14 +2,17 @@ package Osoby;
 
 import OSPABA.Entity;
 import OSPABA.Simulation;
+import OSPRNG.UniformContinuousRNG;
 
 import java.util.ArrayList;
 
 public class Osoba extends Entity {
+    private UniformContinuousRNG typZakaznikaGenerator = new UniformContinuousRNG(0.0, 1.0);
+    private UniformContinuousRNG nechaTovarNaObsluznom = new UniformContinuousRNG(0.0, 1.0);
     private double casPrichodu;
     private StavyOsoby stav;
-    private int ID;
-    private boolean nechalTovarNaVydajni = false;
+
+    private boolean nechalTovarNaVydajni;
 
     private TypZakaznika typZakaznika;
 
@@ -19,10 +22,31 @@ public class Osoba extends Entity {
 
 
     public Osoba(Simulation sim) {
-        this.stav = stav;
-        this.casPrichodu = casPrichodu;
-        this.ID = ID;
-        this.typZakaznika = typZakaznika;
+        super(sim);
+        this.stav = StavyOsoby.PRICHOD;
+        this.casPrichodu = sim.currentTime();
+        this.typZakaznika = this.generateTypZakaznika();
+        this.nechalTovarNaVydajni = this.generateNechaToavrNaObsluznom();
+
+    }
+    private boolean generateNechaToavrNaObsluznom() {
+        double p = nechaTovarNaObsluznom.sample();
+        if (p < 0.6) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private TypZakaznika generateTypZakaznika() {
+        double p = typZakaznikaGenerator.sample();
+        if (p < 0.5) {
+            return TypZakaznika.BEZNY;
+        } else if (p < 0.65) {
+            return TypZakaznika.ZMLUVNY;
+        } else {
+            return TypZakaznika.ONLINE;
+        }
     }
 
     public void setStav(StavyOsoby stav) {
@@ -64,11 +88,11 @@ public class Osoba extends Entity {
     }
 
     public int getID() {
-        return ID;
+        return super._id;
     }
     public ArrayList<String> toArray() {
         ArrayList<String> infoOZakaz = new ArrayList<>() ;
-        infoOZakaz.add(String.valueOf(ID));
+        infoOZakaz.add(String.valueOf(super._id));
         infoOZakaz.add(String.valueOf(typZakaznika));
         if (stav == StavyOsoby.V_RADE_PRED_AUTOMATOM) {
             infoOZakaz.add("Pred automatom");

@@ -1,14 +1,33 @@
 package agents;
 
 import OSPABA.*;
+import OSPStat.Stat;
+import OSPStat.WStat;
+import Objects.Statistika;
+import Osoby.Osoba;
+import Osoby.OsobaComparatorNoPriority;
+import Osoby.OsobaComparatorPriority;
 import simulation.*;
 import managers.*;
 import continualAssistants.*;
 import instantAssistants.*;
 
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 //meta! id="7"
 public class AgentObsluzneMiesta extends Agent
 {
+	private ArrayList<Stat> priemerVytazenostObsluznychOnline;
+	private ArrayList<Stat> priemerVytazenostObsluznychOstatne;
+	private WStat priemerDlzkaRaduPredObsluzOnline;
+	private WStat priemerDlzkaRaduPredObsluzNormal;
+	private Queue<Osoba> osobyQueue;
+	private Queue<Osoba> onlineQueue;
+	private boolean[] normalneObsluzne;
+	private boolean[] onlineObsluzne;
+
 	public AgentObsluzneMiesta(int id, Simulation mySim, Agent parent)
 	{
 		super(id, mySim, parent);
@@ -20,6 +39,26 @@ public class AgentObsluzneMiesta extends Agent
 	{
 		super.prepareReplication();
 		// Setup component for the next replication
+		priemerVytazenostObsluznychOnline = new ArrayList<>();
+		priemerVytazenostObsluznychOstatne = new ArrayList<>();
+		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
+			priemerVytazenostObsluznychOnline.add(new Stat());
+		}
+		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
+			priemerVytazenostObsluznychOstatne.add(new Stat());
+		}
+		priemerDlzkaRaduPredObsluzOnline = new WStat(mySim());
+		priemerDlzkaRaduPredObsluzNormal = new WStat(mySim());
+		normalneObsluzne = new boolean[Config.pocetNormalObsluznych];
+		onlineObsluzne = new boolean[Config.pocetOnlineObsluznych];
+		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
+			normalneObsluzne[i] = true;
+		}
+		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
+			onlineObsluzne[i] = true;
+		}
+		osobyQueue = new PriorityQueue<>(new OsobaComparatorPriority());
+		onlineQueue = new PriorityQueue<>(new OsobaComparatorNoPriority());
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"

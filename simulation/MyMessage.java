@@ -6,6 +6,8 @@ import Osoby.Osoba;
 public class MyMessage extends MessageForm
 {
 	private Osoba zakaznik;
+	private int cisloPokladne;
+	private int cisloObsluzneho;
 	public MyMessage(Simulation sim)
 	{
 		super(sim);
@@ -22,6 +24,8 @@ public class MyMessage extends MessageForm
 		super(sim);
 		// copy() is called in superclass
 		zakaznik = osoba;
+		cisloObsluzneho = -1;
+		cisloPokladne = -1;
 	}
 
 	@Override
@@ -36,6 +40,9 @@ public class MyMessage extends MessageForm
 		super.copy(message);
 		MyMessage original = (MyMessage)message;
 		// Copy attributes
+		zakaznik = original.zakaznik;
+		cisloPokladne = original.cisloPokladne;
+		cisloObsluzneho = original.cisloObsluzneho;
 	}
 
 	public Osoba getZakaznik() {
@@ -44,5 +51,21 @@ public class MyMessage extends MessageForm
 
 	public void setZakaznik(Osoba zakaznik) {
 		this.zakaznik = zakaznik;
+	}
+
+	public int getCisloPokladne() {
+		return cisloPokladne;
+	}
+
+	public void setCisloPokladne(int cisloPokladne) {
+		this.cisloPokladne = cisloPokladne;
+	}
+
+	public int getCisloObsluzneho() {
+		return cisloObsluzneho;
+	}
+
+	public void setCisloObsluzneho(int cisloObsluzneho) {
+		this.cisloObsluzneho = cisloObsluzneho;
 	}
 }

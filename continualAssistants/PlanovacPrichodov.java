@@ -1,6 +1,7 @@
 package continualAssistants;
 
 import OSPABA.*;
+import OSPRNG.ExponentialRNG;
 import Osoby.Osoba;
 import Rozdelenia.Exponencialne;
 import simulation.*;
@@ -9,7 +10,7 @@ import agents.*;
 //meta! id="27"
 public class PlanovacPrichodov extends Scheduler
 {
-	private Exponencialne prichodLudi = new Exponencialne((double)60/30);
+	private ExponentialRNG prichodLudi = new ExponentialRNG((double)60/30);
 	public PlanovacPrichodov(int id, Simulation mySim, CommonAgent myAgent)
 	{
 		super(id, mySim, myAgent);

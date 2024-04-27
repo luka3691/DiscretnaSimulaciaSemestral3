@@ -1,6 +1,8 @@
 package continualAssistants;
 
 import OSPABA.*;
+import OSPRNG.TriangularRNG;
+import OSPRNG.UniformContinuousRNG;
 import simulation.*;
 import agents.*;
 import OSPABA.Process;
@@ -8,6 +10,7 @@ import OSPABA.Process;
 //meta! id="30"
 public class ProcesZadavaniaDoAutomatu extends Process
 {
+	private UniformContinuousRNG casZadavaniaDoAutomatu = new UniformContinuousRNG(30.0, 120.0);
 	public ProcesZadavaniaDoAutomatu(int id, Simulation mySim, CommonAgent myAgent)
 	{
 		super(id, mySim, myAgent);
@@ -23,6 +26,9 @@ public class ProcesZadavaniaDoAutomatu extends Process
 	//meta! sender="AgentAutomat", id="31", type="Start"
 	public void processStart(MessageForm message)
 	{
+		message.setCode(Mc.finish);
+		hold(casZadavaniaDoAutomatu.sample(), message); // naplanuje ukoncenie nakupu na cas simCas + casNakupu
+		assistantFinished(message);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

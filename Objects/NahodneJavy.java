@@ -29,12 +29,12 @@ public class NahodneJavy {
 
     public NahodneJavy() {
 
-        prichodLudi = new Exponencialne((double)60/30);
-        typZakaznikaGenerator = new SpojiteRovnomerne(0.0, 1.0);
-        casZadavaniaDoAutomatu = new SpojiteRovnomerne(30.0/60, 120.0/60);
-        casNaNadiktovanieObjednavky = new SpojiteRovnomerne(60.0/60, 900.0/60);
-        casNaOdovzadnieOnlineTovaru = new Triangularne(60.0/60, 480.0/60, 120.0/60);
-        nechaTovarNaObsluznom = new SpojiteRovnomerne(0.0, 1.0);
+        //prichodLudi = new Exponencialne((double)60/30);
+        //typZakaznikaGenerator = new SpojiteRovnomerne(0.0, 1.0);
+        //casZadavaniaDoAutomatu = new SpojiteRovnomerne(30.0/60, 120.0/60);
+        //casNaNadiktovanieObjednavky = new SpojiteRovnomerne(60.0/60, 900.0/60);
+        //casNaOdovzadnieOnlineTovaru = new Triangularne(60.0/60, 480.0/60, 120.0/60);
+        //nechaTovarNaObsluznom = new SpojiteRovnomerne(0.0, 1.0);
         spatnePrevzatieVelkehoTovaru = new SpojiteRovnomerne(30.0/60, 70.0/60);
 
         generovanieZlozitosti = new SpojiteRovnomerne(0.0, 1.0);
@@ -42,9 +42,9 @@ public class NahodneJavy {
         casPripravaMierneZlozitej = new SpojiteRovnomerne(9.0, 11.0);
         casPripravaZlozitej = new SpojiteEmpiricke(Arrays.asList(new Double[]{11.0, 12.0}, new Double[]{12.0, 20.0}, new Double[]{20.0, 25.0}), Arrays.asList( 0.1, 0.6, 0.3));
 
-        generovanieTypuPlatby = new SpojiteRovnomerne(0.0, 1.0);
-        trvaniePlatbyHotovost = new DiskretneRovnomerne(180/60, 480/60);
-        trvaniePlatbyKrata = new DiskretneRovnomerne(180/60, 360/60);
+        //generovanieTypuPlatby = new SpojiteRovnomerne(0.0, 1.0);
+        //trvaniePlatbyHotovost = new DiskretneRovnomerne(180/60, 480/60);
+        //trvaniePlatbyKrata = new DiskretneRovnomerne(180/60, 360/60);
 
         nahodnePostavanieDoRadu = new SpojiteRovnomerne(0.0, 1.0);
         nahodnePostavenieDoPokladne = new SpojiteRovnomerne(0.0, 1.0);
