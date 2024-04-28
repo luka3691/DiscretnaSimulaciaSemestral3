@@ -21,6 +21,7 @@ public class DotazNaZaradenieDoRaduPriPokladniach extends Query
 	{
 		MyMessage sprava = (MyMessage) message;
 		int cisloPokladne = getIDNajmensiehoRadu();
+		sprava.getZakaznik().setIdPokladne(cisloPokladne);
 		sprava.setCisloPokladne(cisloPokladne);
 	}
 

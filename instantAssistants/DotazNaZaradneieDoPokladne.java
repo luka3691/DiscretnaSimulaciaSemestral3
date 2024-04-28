@@ -22,6 +22,7 @@ public class DotazNaZaradneieDoPokladne extends Query
 	{
 		MyMessage sprava = (MyMessage) message;
 		int cisloPokladne = getIDPokladne();
+		sprava.getZakaznik().setIdPokladne(cisloPokladne);
 		sprava.setCisloPokladne(cisloPokladne);
 	}
 

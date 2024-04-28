@@ -35,6 +35,24 @@ public class ManagerAutomat extends Manager
 	//meta! sender="AgentPredajna", id="48", type="Request"
 	public void processZadavanieDoAutomatu(MessageForm message)
 	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		AgentPokladne pokladne = (AgentPokladne)myAgent();
+		osoba.setStav(StavyOsoby.V_RADE_PRED_AUTOMATOM);
+		predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
+		//ak je automat prazdny a zmesti sa do radu pred obsluznymi rovno ho zarad do automatu inak ho zarad do radu
+		if (predajna.getAutomatIsEmpty() && predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())) {
+			predajna.naplanujUdalost(new ZačiatokZadavaniaDoAutomatu(predajna, predajna.getSimCas(), osoba));
+			predajna.setAutomatIsEmpty(false);
+		} else {
+			predajna.getOsobyQueue().add(osoba);
+			osoba.setStav(StavyOsoby.V_RADE_PRED_AUTOMATOM);
+			predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
+		}
+		//naplanuj dalsi prichod
+		double dalsiPrichod = predajna.getSimCas() + predajna.getNahodnyJav().getPrichodLudi();
+		if (dalsiPrichod < predajna.getKoniecCasu()) {
+			predajna.naplanujUdalost(new PrichodZakaznika(jadro, dalsiPrichod));
+		}
 	}
 
 	//meta! sender="AgentPredajna", id="63", type="Notice"
