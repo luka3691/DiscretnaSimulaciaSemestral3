@@ -26,9 +26,8 @@ public class ProcesZadavaniaDoAutomatu extends Process
 	//meta! sender="AgentAutomat", id="31", type="Start"
 	public void processStart(MessageForm message)
 	{
-		message.setCode(Mc.finish);
+		message.setCode(Mc.zadavanieDoAutomatuUkoncene);
 		hold(casZadavaniaDoAutomatu.sample(), message); // naplanuje ukoncenie nakupu na cas simCas + casNakupu
-		assistantFinished(message);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -39,6 +38,12 @@ public class ProcesZadavaniaDoAutomatu extends Process
 		}
 	}
 
+	//meta! sender="AgentAutomat", id="103", type="Notice"
+	public void processZadavanieDoAutomatuUkoncene(MessageForm message)
+	{
+		assistantFinished(message);
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	@Override
 	public void processMessage(MessageForm message)
@@ -47,6 +52,10 @@ public class ProcesZadavaniaDoAutomatu extends Process
 		{
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.zadavanieDoAutomatuUkoncene:
+			processZadavanieDoAutomatuUkoncene(message);
 		break;
 
 		default:

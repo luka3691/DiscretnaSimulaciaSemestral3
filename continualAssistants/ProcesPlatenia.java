@@ -28,13 +28,13 @@ public class ProcesPlatenia extends Process
 	//meta! sender="AgentPokladne", id="37", type="Start"
 	public void processStart(MessageForm message)
 	{
+		message.setCode(Mc.platenieHotove);
 		double typPlatby = generovanieTypuPlatby.sample();
 		if (typPlatby < 0.4) {
 			hold(trvaniePlatbyHotovost.sample(), message);
 		} else {
 			hold(trvaniePlatbyKrata.sample(), message);
 		}
-		assistantFinished(message);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -45,6 +45,12 @@ public class ProcesPlatenia extends Process
 		}
 	}
 
+	//meta! sender="AgentPokladne", id="111", type="Notice"
+	public void processPlatenieHotove(MessageForm message)
+	{
+		assistantFinished(message);
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	@Override
 	public void processMessage(MessageForm message)
@@ -53,6 +59,10 @@ public class ProcesPlatenia extends Process
 		{
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.platenieHotove:
+			processPlatenieHotove(message);
 		break;
 
 		default:

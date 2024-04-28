@@ -35,6 +35,10 @@ public class ManagerPredajna extends Manager
 	//meta! sender="AgentObsluzneMiesta", id="46", type="Response"
 	public void processObsluhaZakaznika(MessageForm message)
 	{
+		message.setAddressee(myAgent().mySim().findAgent(Id.agentObsluzneMiesta));
+		message.setSender(myAgent());
+		message.setCode(Mc.obsluhaZakaznika);
+		request(message);
 	}
 
 	//meta! sender="AgentObsluzneMiesta", id="21", type="Notice"
@@ -45,6 +49,10 @@ public class ManagerPredajna extends Manager
 	//meta! sender="AgentAutomat", id="48", type="Response"
 	public void processZadavanieDoAutomatu(MessageForm message)
 	{
+		message.setAddressee(myAgent().mySim().findAgent(Id.agentAutomat));
+		message.setSender(myAgent());
+		message.setCode(Mc.zadavanieDoAutomatu);
+		request(message);
 	}
 
 	//meta! sender="AgentObsluzneMiesta", id="71", type="Notice"
@@ -60,6 +68,10 @@ public class ManagerPredajna extends Manager
 	//meta! sender="AgentPokladne", id="49", type="Response"
 	public void processPlatenieUPokoladne(MessageForm message)
 	{
+		message.setAddressee(myAgent().mySim().findAgent(Id.agentPokladne));
+		message.setSender(myAgent());
+		message.setCode(Mc.platenieUPokoladne);
+		request(message);
 	}
 
 	//meta! sender="AgentModelu", id="16", type="Request"

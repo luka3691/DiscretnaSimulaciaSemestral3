@@ -71,6 +71,7 @@ public class AgentObsluzneMiesta extends Agent
 		addOwnMessage(Mc.uvolneniePredajne);
 		addOwnMessage(Mc.obsluhaZakaznika);
 		addOwnMessage(Mc.startObednejPrestavky);
+		addOwnMessage(Mc.obsluhaHotova);
 	}
 	//meta! tag="end"
 }

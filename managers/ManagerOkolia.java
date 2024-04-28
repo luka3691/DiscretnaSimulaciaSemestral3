@@ -30,7 +30,7 @@ public class ManagerOkolia extends Manager
 	//meta! sender="AgentModelu", id="18", type="Notice"
 	public void processInit(MessageForm message)
 	{
-		message.setAddressee(((AgentOkolia)myAgent()).planovacPrichoduZakaznika());
+		message.setAddressee(((AgentOkolia)myAgent()).findAssistant(Id.planovacPrichodov));
 		startContinualAssistant(message);   // nastavy kod spravy na start
 	}
 
@@ -47,11 +47,7 @@ public class ManagerOkolia extends Manager
 	//meta! sender="AgentModelu", id="13", type="Notice"
 	public void processOdchodZakaznika(MessageForm message)
 	{
-		((AgentOkolia)myAgent()).incPocetZakaznikov();
-
-		message.setAddressee(((MySimulation)mySim()).agentModelu());
-		message.setCode(Mc.prichodZakaznika);
-		notice(message);
+		//nic
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

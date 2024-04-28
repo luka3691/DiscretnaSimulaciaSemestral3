@@ -40,14 +40,14 @@ public class ProcesObsluhy extends Process
 	//meta! sender="AgentObsluzneMiesta", id="34", type="Start"
 	public void processStart(MessageForm message)
 	{
-		message.setCode(Mc.procesNakupuOstatneHotovy);
+		message.setCode(Mc.obsluhaHotova);
 		if (((MyMessage)message).getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
 			hold(casNaOdovzadnieOnlineTovaru.sample(), message);
 		} else {
 			double trvanieVydavaniaTovaru = getTravnieObjednavky() + casNaNadiktovanieObjednavky.sample();
 			hold(trvanieVydavaniaTovaru, message);
 		}
-		assistantFinished(message);
+
 	}
 	public double getTravnieObjednavky() {
 		double typObjednavky = generovanieZlozitosti.sample();
@@ -68,12 +68,22 @@ public class ProcesObsluhy extends Process
 		}
 	}
 
+	//meta! sender="AgentObsluzneMiesta", id="109", type="Notice"
+	public void processObsluhaHotova(MessageForm message)
+	{
+		assistantFinished(message);
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	@Override
 	public void processMessage(MessageForm message)
 	{
 		switch (message.code())
 		{
+		case Mc.obsluhaHotova:
+			processObsluhaHotova(message);
+		break;
+
 		case Mc.start:
 			processStart(message);
 		break;

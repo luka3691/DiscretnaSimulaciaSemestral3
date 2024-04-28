@@ -38,6 +38,7 @@ public class AgentAutomat extends Agent
 		new ProcesZadavaniaDoAutomatu(Id.procesZadavaniaDoAutomatu, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.zadavanieDoAutomatu);
+		addOwnMessage(Mc.zadavanieDoAutomatuUkoncene);
 		addOwnMessage(Mc.uvolnenieAutomatu);
 	}
 	//meta! tag="end"

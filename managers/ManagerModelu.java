@@ -30,11 +30,17 @@ public class ManagerModelu extends Manager
 	//meta! sender="AgentOkolia", id="12", type="Notice"
 	public void processPrichodZakaznika(MessageForm message)
 	{
+		message.setAddressee(mySim().findAgent(Id.agentPredajna));
+		message.setCode(Mc.zakaznikVPredajni);
+		request(message);
 	}
 
 	//meta! sender="AgentPredajna", id="16", type="Response"
 	public void processZakaznikVPredajni(MessageForm message)
 	{
+		message.setAddressee(mySim().findAgent(Id.agentOkolia));
+		message.setCode(Mc.odchodZakaznika);
+		notice(message);
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -42,12 +48,23 @@ public class ManagerModelu extends Manager
 	{
 		switch (message.code())
 		{
+			case Mc.init:
+				init();
+				break;
 		}
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
+		MyMessage message = new MyMessage(mySim());
+		message.setAddressee(mySim().findAgent(Id.agentOkolia));
+		message.setCode(Mc.init);
+		notice(message);
+
+		MyMessage copy = new MyMessage(message);
+		copy.setAddressee(mySim().findAgent(Id.agentPredajna));
+		notice(copy);
 	}
 
 	@Override

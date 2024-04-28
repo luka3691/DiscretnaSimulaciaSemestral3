@@ -59,6 +59,7 @@ public class AgentPokladne extends Agent
 		new DotazNaZaradenieDoRaduPriPokladniach(Id.dotazNaZaradenieDoRaduPriPokladniach, mySim(), this);
 		new DotazNaZaradneieDoPokladne(Id.dotazNaZaradneieDoPokladne, mySim(), this);
 		addOwnMessage(Mc.init);
+		addOwnMessage(Mc.platenieHotove);
 		addOwnMessage(Mc.startObednejPrestavky);
 		addOwnMessage(Mc.platenieUPokoladne);
 	}
