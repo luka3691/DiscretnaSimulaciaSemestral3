@@ -1,9 +1,11 @@
 package agents;
 
 import OSPABA.*;
+import OSPDataStruct.SimQueue;
 import OSPStat.Stat;
 import OSPStat.WStat;
 import Objects.Statistika;
+import Osoby.Osoba;
 import simulation.*;
 import managers.*;
 import continualAssistants.*;
@@ -12,6 +14,8 @@ import instantAssistants.*;
 //meta! id="9"
 public class AgentAutomat extends Agent
 {
+	private SimQueue<Osoba> frontZakaznikov;
+	private boolean automatIsEmpty;
 	private Stat priemerVytazenieAutomatu;
 	private Stat priemerCakanieVRadePredAutomatom;
 	private WStat priemerDlzkaRaduAutomat;
@@ -29,6 +33,8 @@ public class AgentAutomat extends Agent
 		priemerVytazenieAutomatu = new Stat();
 		priemerCakanieVRadePredAutomatom = new Stat();
 		priemerDlzkaRaduAutomat = new WStat(mySim());
+		frontZakaznikov = new SimQueue<>();
+		automatIsEmpty = true;
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -42,4 +48,28 @@ public class AgentAutomat extends Agent
 		addOwnMessage(Mc.uvolnenieAutomatu);
 	}
 	//meta! tag="end"
+
+	public SimQueue<Osoba> getFrontZakaznikov() {
+		return frontZakaznikov;
+	}
+
+	public boolean isAutomatIsEmpty() {
+		return automatIsEmpty;
+	}
+
+	public void setAutomatIsEmpty(boolean automatIsEmpty) {
+		this.automatIsEmpty = automatIsEmpty;
+	}
+
+	public Stat getPriemerVytazenieAutomatu() {
+		return priemerVytazenieAutomatu;
+	}
+
+	public Stat getPriemerCakanieVRadePredAutomatom() {
+		return priemerCakanieVRadePredAutomatom;
+	}
+
+	public WStat getPriemerDlzkaRaduAutomat() {
+		return priemerDlzkaRaduAutomat;
+	}
 }

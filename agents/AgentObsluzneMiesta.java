@@ -68,10 +68,44 @@ public class AgentObsluzneMiesta extends Agent
 		new Scheduler1(Id.scheduler1, mySim(), this);
 		new ProcesObsluhy(Id.procesObsluhy, mySim(), this);
 		new DotazZaradNaObsluzne(Id.dotazZaradNaObsluzne, mySim(), this);
+		new DotazZmestiSaDoObsluznych(Id.dotazZmestiSaDoObsluznych, mySim(), this);
 		addOwnMessage(Mc.uvolneniePredajne);
 		addOwnMessage(Mc.obsluhaZakaznika);
 		addOwnMessage(Mc.startObednejPrestavky);
 		addOwnMessage(Mc.obsluhaHotova);
 	}
 	//meta! tag="end"
+
+
+	public Queue<Osoba> getOsobyQueue() {
+		return osobyQueue;
+	}
+
+	public Queue<Osoba> getOnlineQueue() {
+		return onlineQueue;
+	}
+
+	public boolean[] getNormalneObsluzne() {
+		return normalneObsluzne;
+	}
+
+	public boolean[] getOnlineObsluzne() {
+		return onlineObsluzne;
+	}
+
+	public ArrayList<Stat> getPriemerVytazenostObsluznychOnline() {
+		return priemerVytazenostObsluznychOnline;
+	}
+
+	public ArrayList<Stat> getPriemerVytazenostObsluznychOstatne() {
+		return priemerVytazenostObsluznychOstatne;
+	}
+
+	public WStat getPriemerDlzkaRaduPredObsluzOnline() {
+		return priemerDlzkaRaduPredObsluzOnline;
+	}
+
+	public WStat getPriemerDlzkaRaduPredObsluzNormal() {
+		return priemerDlzkaRaduPredObsluzNormal;
+	}
 }

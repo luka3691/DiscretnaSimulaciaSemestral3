@@ -73,4 +73,12 @@ public class AgentPokladne extends Agent
 	public PriorityQueue<Osoba>[] getRady() {
 		return rady;
 	}
+
+	public ArrayList<Stat> getPriemerVytazenostPokladni() {
+		return priemerVytazenostPokladni;
+	}
+
+	public ArrayList<WStat> getPriemerDlzkaRadovPriPokladniach() {
+		return priemerDlzkaRadovPriPokladniach;
+	}
 }

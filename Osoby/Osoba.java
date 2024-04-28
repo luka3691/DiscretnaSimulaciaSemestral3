@@ -3,6 +3,7 @@ package Osoby;
 import OSPABA.Entity;
 import OSPABA.Simulation;
 import OSPRNG.UniformContinuousRNG;
+import simulation.MySimulation;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,7 @@ public class Osoba extends Entity {
 
     public void setStav(StavyOsoby stav) {
         this.stav = stav;
+        ((MySimulation)mySim()).setStavyOsob(this.toArray());
     }
 
     public double getCasPrichodu() {

@@ -57,14 +57,6 @@ public class ManagerModelu extends Manager
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
-		MyMessage message = new MyMessage(mySim());
-		message.setAddressee(mySim().findAgent(Id.agentOkolia));
-		message.setCode(Mc.init);
-		notice(message);
-
-		MyMessage copy = new MyMessage(message);
-		copy.setAddressee(mySim().findAgent(Id.agentPredajna));
-		notice(copy);
 	}
 
 	@Override

@@ -62,11 +62,12 @@ public class ManagerPokladne extends Manager
 			spravaCopy.setZakaznik(osobaNova);
 			pokladne.getPokladne()[idPokladne] = false;
 			spravaCopy.setCode(Mc.platenieUPokoladne);
-			spravaCopy.setAddressee(proces());
+			//spravaCopy.setAddressee(proces());
 			startContinualAssistant(spravaCopy);
 			//statistiky
 			//predajna.getPriemerDlzkaRadovPriPokladniach().get(osoba.getIdPokladne()).pridajZaznam(predajna.getPokladne().getRady()[osoba.getIdPokladne()].size(), predajna.getSimCas());
 		}
+		/*
 		if (osoba.isNechalTovarNaVydajni()) {
 			osoba.setStav(StavyOsoby.IDE_SI_PRE_NADROZMERNY_TOVAR);
 			predajna.naplanujUdalost(new PrevzatieNadrozmernehoTovaru(predajna, predajna.getSimCas() + predajna.getNahodnyJav().getSpatnePrevzatieTovaru(), osoba));
@@ -76,7 +77,7 @@ public class ManagerPokladne extends Manager
 			int pocetObsluzenych = predajna.getPocetObsluzenychZakaznikov() + 1;
 			predajna.setPocetObsluzenychZakaznikov(pocetObsluzenych);
 		}
-
+*/
 
 	}
 
@@ -102,7 +103,7 @@ public class ManagerPokladne extends Manager
 		if (idPokladneNaZaradenie != -1) {
 			//nasla sa volna pokladna tak zarad osobu do tej pokladne
 			pokladne.getPokladne()[idPokladneNaZaradenie] = false;
-			message.setAddressee(proces());
+			//message.setAddressee(proces());
 			startContinualAssistant(message);
 		} else {
 			//zarad osobu do najratsieho radu
@@ -130,9 +131,9 @@ public class ManagerPokladne extends Manager
 			}
 
 		}
-
+predajna.setStavyOsob(osoba.toArray());
 		 */
-		predajna.setStavyOsob(osoba.toArray());
+
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -190,6 +191,9 @@ public class ManagerPokladne extends Manager
 	{
 		return (AgentPokladne)super.myAgent();
 	}
+	/*
 	public ContinualAssistant proces()
 	{ return ((AgentPokladne)myAgent()).f; }
+
+	 */
 }

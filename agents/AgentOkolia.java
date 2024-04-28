@@ -1,6 +1,7 @@
 package agents;
 
 import OSPABA.*;
+import OSPStat.Stat;
 import simulation.*;
 import managers.*;
 import continualAssistants.*;
@@ -10,6 +11,8 @@ import instantAssistants.*;
 public class AgentOkolia extends Agent
 {
 	private int _pocetZakaznikov;
+	private Stat priemerCasVObchode;
+
 	public AgentOkolia(int id, Simulation mySim, Agent parent)
 	{
 		super(id, mySim, parent);
@@ -22,6 +25,7 @@ public class AgentOkolia extends Agent
 		super.prepareReplication();
 		// Setup component for the next replication
 		_pocetZakaznikov = 0;
+		priemerCasVObchode = new Stat();
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -40,4 +44,8 @@ public class AgentOkolia extends Agent
 
 	public void incPocetZakaznikov()
 	{ ++_pocetZakaznikov; }
+
+	public Stat getPriemerCasVObchode() {
+		return priemerCasVObchode;
+	}
 }

@@ -1,6 +1,7 @@
 package managers;
 
 import OSPABA.*;
+import Osoby.StavyOsoby;
 import simulation.*;
 import agents.*;
 import continualAssistants.*;
@@ -31,6 +32,7 @@ public class ManagerOkolia extends Manager
 	public void processInit(MessageForm message)
 	{
 		message.setAddressee(((AgentOkolia)myAgent()).findAssistant(Id.planovacPrichodov));
+		System.out.println(_mySim.currentTime());
 		startContinualAssistant(message);   // nastavy kod spravy na start
 	}
 
@@ -38,7 +40,7 @@ public class ManagerOkolia extends Manager
 	public void processFinish(MessageForm message)
 	{
 		((AgentOkolia)myAgent()).incPocetZakaznikov();
-
+		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
 		message.setAddressee(((MySimulation)mySim()).agentModelu());
 		message.setCode(Mc.prichodZakaznika);
 		notice(message);

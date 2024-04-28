@@ -26,6 +26,7 @@ public class PlanovacPrichodov extends Scheduler
 	//meta! sender="AgentOkolia", id="28", type="Start"
 	public void processStart(MessageForm message)
 	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
 		message.setCode(Mc.novyZakaznik);
 		hold(prichodLudi.sample(), message);
 	}
@@ -35,7 +36,6 @@ public class PlanovacPrichodov extends Scheduler
 	{
 		MyMessage msg = new MyMessage((MyMessage) message);
 		hold(prichodLudi.sample(), msg);
-
 		((MyMessage)message).setZakaznik(new Osoba(mySim()));
 		assistantFinished(message);
 	}
