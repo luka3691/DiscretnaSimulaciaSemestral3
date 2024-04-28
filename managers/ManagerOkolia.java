@@ -76,12 +76,12 @@ public class ManagerOkolia extends Manager
 			processInit(message);
 		break;
 
-		case Mc.odchodZakaznika:
-			processOdchodZakaznika(message);
-		break;
-
 		case Mc.finish:
 			processFinish(message);
+		break;
+
+		case Mc.odchodZakaznika:
+			processOdchodZakaznika(message);
 		break;
 
 		default:

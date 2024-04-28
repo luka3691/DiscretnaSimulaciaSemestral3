@@ -67,6 +67,7 @@ public class AgentObsluzneMiesta extends Agent
 		new ManagerObsluzneMiesta(Id.managerObsluzneMiesta, mySim(), this);
 		new Scheduler1(Id.scheduler1, mySim(), this);
 		new ProcesObsluhy(Id.procesObsluhy, mySim(), this);
+		new DotazZaradNaObsluzne(Id.dotazZaradNaObsluzne, mySim(), this);
 		addOwnMessage(Mc.uvolneniePredajne);
 		addOwnMessage(Mc.obsluhaZakaznika);
 		addOwnMessage(Mc.startObednejPrestavky);

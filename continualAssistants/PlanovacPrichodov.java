@@ -54,12 +54,12 @@ public class PlanovacPrichodov extends Scheduler
 	{
 		switch (message.code())
 		{
-		case Mc.novyZakaznik:
-			processNovyZakaznik(message);
-		break;
-
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.novyZakaznik:
+			processNovyZakaznik(message);
 		break;
 
 		default:

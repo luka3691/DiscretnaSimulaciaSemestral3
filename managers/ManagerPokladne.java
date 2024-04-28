@@ -70,10 +70,6 @@ public class ManagerPokladne extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.init:
-			processInit(message);
-		break;
-
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -87,12 +83,16 @@ public class ManagerPokladne extends Manager
 			}
 		break;
 
+		case Mc.startObednejPrestavky:
+			processStartObednejPrestavky(message);
+		break;
+
 		case Mc.platenieUPokoladne:
 			processPlatenieUPokoladne(message);
 		break;
 
-		case Mc.startObednejPrestavky:
-			processStartObednejPrestavky(message);
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:

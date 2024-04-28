@@ -1,9 +1,10 @@
 package Objects;
 
-import MonteCarlo.Osoby.Osoba;
-import MonteCarlo.Osoby.OsobaComparatorNoPriority;
-import MonteCarlo.Osoby.OsobaComparatorPriority;
-import MonteCarlo.Osoby.TypZakaznika;
+
+import Osoby.Osoba;
+import Osoby.OsobaComparatorNoPriority;
+import Osoby.OsobaComparatorPriority;
+import Osoby.TypZakaznika;
 
 import java.util.PriorityQueue;
 import java.util.Queue;

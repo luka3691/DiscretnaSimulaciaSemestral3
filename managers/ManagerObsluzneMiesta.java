@@ -73,14 +73,18 @@ public class ManagerObsluzneMiesta extends Manager
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.procesObsluhy:
-				processFinishProcesObsluhy(message);
-			break;
-
 			case Id.scheduler1:
 				processFinishScheduler1(message);
 			break;
+
+			case Id.procesObsluhy:
+				processFinishProcesObsluhy(message);
+			break;
 			}
+		break;
+
+		case Mc.startObednejPrestavky:
+			processStartObednejPrestavky(message);
 		break;
 
 		case Mc.obsluhaZakaznika:
@@ -89,10 +93,6 @@ public class ManagerObsluzneMiesta extends Manager
 
 		case Mc.uvolneniePredajne:
 			processUvolneniePredajne(message);
-		break;
-
-		case Mc.startObednejPrestavky:
-			processStartObednejPrestavky(message);
 		break;
 
 		default:
