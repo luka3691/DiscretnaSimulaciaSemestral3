@@ -41,17 +41,19 @@ public class ManagerAutomat extends Manager
 		sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_AUTOMATOM);
 		//predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
 		//ak je automat prazdny a zmesti sa do radu pred obsluznymi rovno ho zarad do automatu inak ho zarad do radu
-		/*
-		if (predajna.isAutomatIsEmpty() && predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())) {
-			predajna.naplanujUdalost(new ZačiatokZadavaniaDoAutomatu(predajna, predajna.getSimCas(), osoba));
+
+		if (predajna.isAutomatIsEmpty() /* && predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())*/) {
 			predajna.setAutomatIsEmpty(false);
+			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
+			startContinualAssistant(sprava);
+
 		} else {
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_AUTOMATOM);
 			predajna.getFrontZakaznikov().add(sprava.getZakaznik());
-			predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
+			//predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
 		}
 
-		 */
+
 	}
 
 	//meta! sender="AgentPredajna", id="63", type="Notice"
@@ -62,6 +64,19 @@ public class ManagerAutomat extends Manager
 	//meta! sender="ProcesZadavaniaDoAutomatu", id="31", type="Finish"
 	public void processFinish(MessageForm message)
 	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		AgentAutomat predajna = (AgentAutomat) myAgent();
+		((MyMessage)message).getZakaznik().setStav(StavyOsoby.KONIEC_ZADAVANIA_DO_AUTOMATU);
+		if (!predajna.getFrontZakaznikov().isEmpty() /*&& predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())*/) {
+			sprava.setZakaznik(predajna.getFrontZakaznikov().poll());
+			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
+			startContinualAssistant(sprava);
+		} else {
+			predajna.setAutomatIsEmpty(true);
+		}
+		message.setCode(Mc.obsluhaZakaznika);
+		response(message);
+		//predajna.setStavyOsob(osoba.toArray());
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
