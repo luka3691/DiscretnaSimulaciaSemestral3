@@ -34,9 +34,11 @@ public class PlanovacPrichodov extends Scheduler
 	//meta! sender="AgentOkolia", id="29", type="Notice"
 	public void processNovyZakaznik(MessageForm message)
 	{
-		MyMessage msg = new MyMessage((MyMessage)message);
-		hold(prichodLudiBezny.sample(), msg);
-
+		double dalsiPrichod = prichodLudiBezny.sample();
+		if (mySim().currentTime() + dalsiPrichod < Config.casKoncaVydavaniaListkov) {
+			MyMessage msg = new MyMessage((MyMessage)message);
+			hold(dalsiPrichod, msg);
+		}
 		((MyMessage)message).setZakaznik(new Osoba(mySim()));
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
 		assistantFinished(message);

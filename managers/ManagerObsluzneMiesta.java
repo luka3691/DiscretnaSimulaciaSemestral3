@@ -118,8 +118,8 @@ public class ManagerObsluzneMiesta extends Manager
 		response(message);
 	}
 
-	//meta! sender="Scheduler1", id="60", type="Finish"
-	public void processFinishScheduler1(MessageForm message)
+	//meta! sender="PlanovacPrestavkaObsluzne", id="60", type="Finish"
+	public void processFinishPlanovacPrestavkaObsluzne(MessageForm message)
 	{
 	}
 
@@ -129,6 +129,51 @@ public class ManagerObsluzneMiesta extends Manager
 		switch (message.code())
 		{
 		}
+	}
+
+	//meta! sender="AgentPredajna", id="135", type="Request"
+	public void processSpatnePrevzatie(MessageForm message)
+	{
+		//ak nie je prazdny rad pred danou pokladnou tak naplanuj zaciatok platenia
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		sprava.setAddressee(myAgent().findAssistant(Id.spatnePrevzatie));
+		startContinualAssistant(sprava);
+	}
+
+	//meta! sender="SpatnePrevzatie", id="139", type="Finish"
+	public void processFinishSpatnePrevzatie(MessageForm message)
+	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		int idNavstivenehoObsluzneho = sprava.getZakaznik().getIdObsluzneho();
+		boolean[] obsluzneDanehoTypu;
+		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+			obsluzneDanehoTypu = myAgent().getOnlineObsluzne();
+		} else {
+			obsluzneDanehoTypu = myAgent().getNormalneObsluzne();
+		}
+		Queue<Osoba> queue;
+		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+			queue = myAgent().getOnlineQueue();
+		} else {
+			queue = myAgent().getOsobyQueue();
+		}
+		//naplanuj novu obsluhu ak nie je rad prazdny
+		if (obsluzneDanehoTypu[idNavstivenehoObsluzneho] && !queue.isEmpty()) {
+			Osoba novaOsoba = queue.poll();
+			int id = sprava.getCisloObsluzneho();
+			novaOsoba.setIdObsluzneho(id);
+			novaOsoba.setStav(StavyOsoby.JE_OBSLUHOVANY);
+			obsluzneDanehoTypu[idNavstivenehoObsluzneho] = false;
+			sprava.setZakaznik(novaOsoba);
+			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
+			startContinualAssistant(sprava);
+
+		}
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
+		((MyMessage) message).getZakaznik().setNadrozmernaObjednavka(false);
+		message.setCode(Mc.spatnePrevzatie);
+
+		response(message);
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -141,6 +186,10 @@ public class ManagerObsluzneMiesta extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -148,8 +197,12 @@ public class ManagerObsluzneMiesta extends Manager
 				processFinishProcesObsluhy(message);
 			break;
 
-			case Id.scheduler1:
-				processFinishScheduler1(message);
+			case Id.planovacPrestavkaObsluzne:
+				processFinishPlanovacPrestavkaObsluzne(message);
+			break;
+
+			case Id.spatnePrevzatie:
+				processFinishSpatnePrevzatie(message);
 			break;
 			}
 		break;

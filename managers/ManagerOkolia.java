@@ -37,7 +37,7 @@ public class ManagerOkolia extends Manager
 	}
 
 	//meta! sender="PlanovacPrichodov", id="28", type="Finish"
-	public void processFinish(MessageForm message)
+	public void processFinishPlanovacPrichodov(MessageForm message)
 	{
 		((AgentOkolia)myAgent()).incPocetZakaznikov();
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
@@ -60,6 +60,11 @@ public class ManagerOkolia extends Manager
 		}
 	}
 
+	//meta! sender="ZatvaraniePredajneOkolie", id="125", type="Finish"
+	public void processFinishZatvaraniePredajneOkolie(MessageForm message)
+	{
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -71,7 +76,16 @@ public class ManagerOkolia extends Manager
 		switch (message.code())
 		{
 		case Mc.finish:
-			processFinish(message);
+			switch (message.sender().id())
+			{
+			case Id.zatvaraniePredajneOkolie:
+				processFinishZatvaraniePredajneOkolie(message);
+			break;
+
+			case Id.planovacPrichodov:
+				processFinishPlanovacPrichodov(message);
+			break;
+			}
 		break;
 
 		case Mc.odchodZakaznika:

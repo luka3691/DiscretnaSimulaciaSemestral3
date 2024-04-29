@@ -42,8 +42,8 @@ public class ManagerPokladne extends Manager
 	{
 	}
 
-	//meta! sender="Scheduler2", id="62", type="Finish"
-	public void processFinishScheduler2(MessageForm message)
+	//meta! sender="PlanovacPrestavkaPokladne", id="62", type="Finish"
+	public void processFinishPlanovacPrestavkaPokladne(MessageForm message)
 	{
 	}
 
@@ -78,7 +78,8 @@ public class ManagerPokladne extends Manager
 			predajna.setPocetObsluzenychZakaznikov(pocetObsluzenych);
 		}
 */
-
+		message.setCode(Mc.spatnePrevzatie);
+		response(message);
 	}
 
 	//meta! sender="AgentPredajna", id="49", type="Request"
@@ -93,7 +94,7 @@ public class ManagerPokladne extends Manager
 			//nasla sa volna pokladna tak zarad osobu do tej pokladne
 			myAgent().getPokladne()[idPokladneNaZaradenie] = false;
 			sprava.getZakaznik().setStav(StavyOsoby.JE_OBSLUHOVANY_V_POKLADNI);
-			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
+			sprava.setAddressee(myAgent().findAssistant(Id.procesPlatenia));
 			startContinualAssistant(sprava);
 		} else {
 			//zarad osobu do najratsieho radu
@@ -141,8 +142,8 @@ public class ManagerPokladne extends Manager
 				processFinishProcesPlatenia(message);
 			break;
 
-			case Id.scheduler2:
-				processFinishScheduler2(message);
+			case Id.planovacPrestavkaPokladne:
+				processFinishPlanovacPrestavkaPokladne(message);
 			break;
 			}
 		break;

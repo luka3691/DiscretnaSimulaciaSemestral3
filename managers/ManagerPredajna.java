@@ -1,6 +1,8 @@
 package managers;
 
 import OSPABA.*;
+import Osoby.Osoba;
+import Osoby.StavyOsoby;
 import simulation.*;
 import agents.*;
 import continualAssistants.*;
@@ -87,9 +89,23 @@ public class ManagerPredajna extends Manager
 		}
 	}
 
-	//meta! sender="AgentAutomat", id="121", type="Response"
+	//meta! sender="AgentObsluzneMiesta", id="135", type="Response"
 	public void processSpatnePrevzatie(MessageForm message)
 	{
+		Osoba zakaznik = ((MyMessage)message).getZakaznik();
+		if (zakaznik.isNechalTovarNaVydajni()) {
+			zakaznik.setStav(StavyOsoby.IDE_SI_PRE_NADROZMERNY_TOVAR);
+			message.setAddressee(myAgent().mySim().findAgent(Id.agentObsluzneMiesta));
+			message.setSender(myAgent());
+			message.setCode(Mc.spatnePrevzatie);
+			request(message);
+		} else {
+			zakaznik.setStav(StavyOsoby.ODCHADZA);
+			//predajna.getPriemerCasVObchode().pridajZaznam(predajna.getSimCas() - osoba.getCasPrichodu());
+			//int pocetObsluzenych = predajna.getPocetObsluzenychZakaznikov() + 1;
+			//predajna.setPocetObsluzenychZakaznikov(pocetObsluzenych);
+			response(message);
+		}
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -102,6 +118,10 @@ public class ManagerPredajna extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
 		case Mc.endObednejPrestavky:
 			switch (message.sender().id())
 			{
@@ -133,10 +153,6 @@ public class ManagerPredajna extends Manager
 
 		case Mc.obsluhaZakaznika:
 			processObsluhaZakaznika(message);
-		break;
-
-		case Mc.spatnePrevzatie:
-			processSpatnePrevzatie(message);
 		break;
 
 		case Mc.zakaznikVPredajni:

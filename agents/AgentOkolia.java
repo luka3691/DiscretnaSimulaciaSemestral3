@@ -32,6 +32,7 @@ public class AgentOkolia extends Agent
 	private void init()
 	{
 		new ManagerOkolia(Id.managerOkolia, mySim(), this);
+		new ZatvaraniePredajneOkolie(Id.zatvaraniePredajneOkolie, mySim(), this);
 		new PlanovacPrichodov(Id.planovacPrichodov, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.novyZakaznik);

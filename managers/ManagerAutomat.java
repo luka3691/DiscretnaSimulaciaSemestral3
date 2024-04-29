@@ -31,6 +31,9 @@ public class ManagerAutomat extends Manager
 	//meta! sender="AgentPredajna", id="56", type="Notice"
 	public void processInit(MessageForm message)
 	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		sprava.setAddressee(myAgent().findAssistant(Id.zatvaraniePredajneAutomat));
+		startContinualAssistant(sprava);
 	}
 
 	//meta! sender="AgentPredajna", id="48", type="Request"
@@ -63,7 +66,7 @@ public class ManagerAutomat extends Manager
 	}
 
 	//meta! sender="ProcesZadavaniaDoAutomatu", id="31", type="Finish"
-	public void processFinish(MessageForm message)
+	public void processFinishProcesZadavaniaDoAutomatu(MessageForm message)
 	{
 		MyMessage sprava = new MyMessage((MyMessage) message);
 		AgentAutomat predajna = (AgentAutomat) myAgent();
@@ -76,6 +79,7 @@ public class ManagerAutomat extends Manager
 			predajna.setAutomatIsEmpty(true);
 		}
 		message.setCode(Mc.obsluhaZakaznika);
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 		response(message);
 		//predajna.setStavyOsob(osoba.toArray());
 	}
@@ -88,8 +92,13 @@ public class ManagerAutomat extends Manager
 		}
 	}
 
-	//meta! sender="AgentPredajna", id="121", type="Request"
+	//meta! userInfo="Removed from model"
 	public void processSpatnePrevzatie(MessageForm message)
+	{
+	}
+
+	//meta! sender="ZatvaraniePredajneAutomat", id="128", type="Finish"
+	public void processFinishZatvaraniePredajneAutomat(MessageForm message)
 	{
 	}
 
@@ -104,7 +113,16 @@ public class ManagerAutomat extends Manager
 		switch (message.code())
 		{
 		case Mc.finish:
-			processFinish(message);
+			switch (message.sender().id())
+			{
+			case Id.procesZadavaniaDoAutomatu:
+				processFinishProcesZadavaniaDoAutomatu(message);
+			break;
+
+			case Id.zatvaraniePredajneAutomat:
+				processFinishZatvaraniePredajneAutomat(message);
+			break;
+			}
 		break;
 
 		case Mc.init:
@@ -113,10 +131,6 @@ public class ManagerAutomat extends Manager
 
 		case Mc.zadavanieDoAutomatu:
 			processZadavanieDoAutomatu(message);
-		break;
-
-		case Mc.spatnePrevzatie:
-			processSpatnePrevzatie(message);
 		break;
 
 		case Mc.uvolnenieAutomatu:
