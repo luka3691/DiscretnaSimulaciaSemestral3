@@ -1,6 +1,8 @@
 package managers;
 
 import OSPABA.*;
+import Osoby.StavyOsoby;
+import Osoby.TypZakaznika;
 import simulation.*;
 import agents.*;
 import continualAssistants.*;
@@ -35,6 +37,38 @@ public class ManagerObsluzneMiesta extends Manager
 	//meta! sender="AgentPredajna", id="46", type="Request"
 	public void processObsluhaZakaznika(MessageForm message)
 	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		AgentObsluzneMiesta obsluzne = (AgentObsluzneMiesta)myAgent();
+		sprava.setAddressee(myAgent().findAssistant(Id.dotazZaradNaObsluzne));
+		execute(sprava);
+		int id = sprava.getCisloObsluzneho();
+		if (id != -1) {
+			//nasla sa volna pokladna, naplanuj zaciatok obsluhy
+			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+				myAgent().getOnlineObsluzne()[id] = false;
+			} else {
+				myAgent().getNormalneObsluzne()[id] = false;
+			}
+			sprava.getZakaznik().setIdObsluzneho(id);
+			sprava.getZakaznik().setStav(StavyOsoby.JE_OBSLUHOVANY);
+			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
+			startContinualAssistant(sprava);
+		} else {
+			//zarad osobu do radu pred obsluznymi
+			myAgent().zaradDoRadu(sprava.getZakaznik());
+			/*
+			if (osoba.getTypZakaznika() == TypZakaznika.ONLINE) {
+				predajna.getPriemerDlzkaRaduPredObsluzOnline().pridajZaznam(predajna.getObsluzneMiesta().getOnlineQueue().size(), predajna.getSimCas());
+			} else {
+				predajna.getPriemerDlzkaRaduPredObsluzNormal().pridajZaznam(predajna.getObsluzneMiesta().getOsobyQueue().size(), predajna.getSimCas());
+			}
+			if (predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())) {
+				predajna.setAutomatIsEmpty(true);
+			}
+
+			 */
+			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_OSBLUHOU);
+		};
 	}
 
 	//meta! sender="AgentPredajna", id="69", type="Notice"
@@ -45,6 +79,8 @@ public class ManagerObsluzneMiesta extends Manager
 	//meta! sender="ProcesObsluhy", id="34", type="Finish"
 	public void processFinishProcesObsluhy(MessageForm message)
 	{
+		message.setCode(Mc.platenieUPokoladne);
+		response(message);
 	}
 
 	//meta! sender="Scheduler1", id="60", type="Finish"

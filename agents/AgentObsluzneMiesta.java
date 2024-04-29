@@ -7,6 +7,7 @@ import Objects.Statistika;
 import Osoby.Osoba;
 import Osoby.OsobaComparatorNoPriority;
 import Osoby.OsobaComparatorPriority;
+import Osoby.TypZakaznika;
 import simulation.*;
 import managers.*;
 import continualAssistants.*;
@@ -107,5 +108,12 @@ public class AgentObsluzneMiesta extends Agent
 
 	public WStat getPriemerDlzkaRaduPredObsluzNormal() {
 		return priemerDlzkaRaduPredObsluzNormal;
+	}
+	public void zaradDoRadu(Osoba osoba) {
+		if (osoba.getTypZakaznika() == TypZakaznika.ONLINE) {
+			onlineQueue.add(osoba);
+		} else {
+			osobyQueue.add(osoba);
+		}
 	}
 }
