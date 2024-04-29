@@ -28,8 +28,9 @@ public class AgentPredajna extends Agent
 		new ManagerPredajna(Id.managerPredajna, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.obsluhaZakaznika);
-		addOwnMessage(Mc.uvolnenieObsluzneho);
 		addOwnMessage(Mc.zadavanieDoAutomatu);
+		addOwnMessage(Mc.uvolnenieObsluzneho);
+		addOwnMessage(Mc.spatnePrevzatie);
 		addOwnMessage(Mc.endObednejPrestavky);
 		addOwnMessage(Mc.platenieUPokoladne);
 		addOwnMessage(Mc.zakaznikVPredajni);

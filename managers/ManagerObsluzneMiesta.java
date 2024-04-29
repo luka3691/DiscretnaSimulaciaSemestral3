@@ -1,12 +1,15 @@
 package managers;
 
 import OSPABA.*;
+import Osoby.Osoba;
 import Osoby.StavyOsoby;
 import Osoby.TypZakaznika;
 import simulation.*;
 import agents.*;
 import continualAssistants.*;
 import instantAssistants.*;
+
+import java.util.Queue;
 
 //meta! id="7"
 public class ManagerObsluzneMiesta extends Manager
@@ -69,6 +72,7 @@ public class ManagerObsluzneMiesta extends Manager
 			 */
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_OSBLUHOU);
 		};
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
 	//meta! sender="AgentPredajna", id="69", type="Notice"
@@ -79,6 +83,37 @@ public class ManagerObsluzneMiesta extends Manager
 	//meta! sender="ProcesObsluhy", id="34", type="Finish"
 	public void processFinishProcesObsluhy(MessageForm message)
 	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
+
+		int idNavstivenehoObsluzneho = sprava.getZakaznik().getIdObsluzneho();
+		boolean[] obsluzneDanehoTypu;
+		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+			obsluzneDanehoTypu = myAgent().getOnlineObsluzne();
+		} else {
+			obsluzneDanehoTypu = myAgent().getNormalneObsluzne();
+		}
+		obsluzneDanehoTypu[idNavstivenehoObsluzneho] = !sprava.getZakaznik().isNechalTovarNaVydajni();
+
+		Queue<Osoba> queue;
+		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+			queue = myAgent().getOnlineQueue();
+		} else {
+			queue = myAgent().getOsobyQueue();
+		}
+		//naplanuj novu obsluhu ak nie je rad prazdny
+		if (obsluzneDanehoTypu[idNavstivenehoObsluzneho] && !queue.isEmpty()) {
+			Osoba novaOsoba = queue.poll();
+			int id = sprava.getCisloObsluzneho();
+			novaOsoba.setIdObsluzneho(id);
+			novaOsoba.setStav(StavyOsoby.JE_OBSLUHOVANY);
+			obsluzneDanehoTypu[idNavstivenehoObsluzneho] = false;
+			sprava.setZakaznik(novaOsoba);
+			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
+			startContinualAssistant(sprava);
+
+		}
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
+
 		message.setCode(Mc.platenieUPokoladne);
 		response(message);
 	}
@@ -109,26 +144,26 @@ public class ManagerObsluzneMiesta extends Manager
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.scheduler1:
-				processFinishScheduler1(message);
-			break;
-
 			case Id.procesObsluhy:
 				processFinishProcesObsluhy(message);
+			break;
+
+			case Id.scheduler1:
+				processFinishScheduler1(message);
 			break;
 			}
 		break;
 
-		case Mc.startObednejPrestavky:
-			processStartObednejPrestavky(message);
+		case Mc.uvolneniePredajne:
+			processUvolneniePredajne(message);
 		break;
 
 		case Mc.obsluhaZakaznika:
 			processObsluhaZakaznika(message);
 		break;
 
-		case Mc.uvolneniePredajne:
-			processUvolneniePredajne(message);
+		case Mc.startObednejPrestavky:
+			processStartObednejPrestavky(message);
 		break;
 
 		default:

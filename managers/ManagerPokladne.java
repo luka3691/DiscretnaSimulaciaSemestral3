@@ -86,53 +86,25 @@ public class ManagerPokladne extends Manager
 	{
 		MyMessage sprava = new MyMessage((MyMessage) message);
 		AgentPokladne pokladne = (AgentPokladne)myAgent();
-		sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_POKLADNOU);
 		sprava.setAddressee(myAgent().findAssistant(Id.dotazNaZaradneieDoPokladne));
 		execute(sprava);
-		int idPokladneNaZaradenie = (int) sprava.msgResult();
-		boolean[] obsluzneDanehoTypu;
-		/*
-		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
-			obsluzneDanehoTypu = pokladne.getObsluzneMiesta().getOnlineObsluzne();
-		} else {
-			obsluzneDanehoTypu = predajna.getObsluzneMiesta().getNormalneObsluzne();
-		}
-
-		obsluzneDanehoTypu[osoba.getIdObsluzneho()] = !osoba.isNechalTovarNaVydajni();
-		 */
+		int idPokladneNaZaradenie = sprava.getCisloPokladne();
 		if (idPokladneNaZaradenie != -1) {
 			//nasla sa volna pokladna tak zarad osobu do tej pokladne
-			pokladne.getPokladne()[idPokladneNaZaradenie] = false;
-			//message.setAddressee(proces());
-			startContinualAssistant(message);
+			myAgent().getPokladne()[idPokladneNaZaradenie] = false;
+			sprava.getZakaznik().setStav(StavyOsoby.JE_OBSLUHOVANY_V_POKLADNI);
+			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
+			startContinualAssistant(sprava);
 		} else {
 			//zarad osobu do najratsieho radu
-			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_POKLADNOU);
-			sprava.setAddressee(myAgent().findAssistant(Id.dotazNaZaradneieDoPokladne));
+			sprava.setAddressee(myAgent().findAssistant(Id.dotazNaZaradenieDoRaduPriPokladniach));
 			execute(sprava);
-			int idRaduNaZaradenie = (int) sprava.msgResult();
-			pokladne.getRady()[idRaduNaZaradenie].add(((MyMessage) message).getZakaznik());
+			int idRaduNaZaradenie = sprava.getCisloPokladne();
+			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_POKLADNOU);
+			myAgent().getRady()[idRaduNaZaradenie].add(sprava.getZakaznik());
 			//predajna.getPriemerDlzkaRadovPriPokladniach().get(idRaduNaZaradenie).pridajZaznam(predajna.getPokladne().getRady()[idRaduNaZaradenie].size(), predajna.getSimCas());
 		}
-		/*
-		Queue<Osoba> queue;
-		if (osoba.getTypZakaznika() == TypZakaznika.ONLINE) {
-			queue = predajna.getObsluzneMiesta().getOnlineQueue();
-		} else {
-			queue = predajna.getObsluzneMiesta().getOsobyQueue();
-		}
-		//naplanuj novu obsluhu ak nie je rad prazdny
-		if (obsluzneDanehoTypu[osoba.getIdObsluzneho()] && !queue.isEmpty()) {
-			Osoba novaOsoba = queue.poll();
-			int id = predajna.getObsluzneMiesta().getIDVolnaPokladna(novaOsoba);
-			if (id != -1) {
-				//pokladna je volna
-				predajna.naplanujUdalost(new ZačiatokObsluhy(predajna, predajna.getSimCas(), novaOsoba, id));
-			}
-
-		}
-predajna.setStavyOsob(osoba.toArray());
-		 */
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 
 	}
 
@@ -154,25 +126,25 @@ predajna.setStavyOsob(osoba.toArray());
 	{
 		switch (message.code())
 		{
-		case Mc.finish:
-			switch (message.sender().id())
-			{
-			case Id.scheduler2:
-				processFinishScheduler2(message);
-			break;
-
-			case Id.procesPlatenia:
-				processFinishProcesPlatenia(message);
-			break;
-			}
+		case Mc.platenieUPokoladne:
+			processPlatenieUPokoladne(message);
 		break;
 
 		case Mc.startObednejPrestavky:
 			processStartObednejPrestavky(message);
 		break;
 
-		case Mc.platenieUPokoladne:
-			processPlatenieUPokoladne(message);
+		case Mc.finish:
+			switch (message.sender().id())
+			{
+			case Id.procesPlatenia:
+				processFinishProcesPlatenia(message);
+			break;
+
+			case Id.scheduler2:
+				processFinishScheduler2(message);
+			break;
+			}
 		break;
 
 		case Mc.init:

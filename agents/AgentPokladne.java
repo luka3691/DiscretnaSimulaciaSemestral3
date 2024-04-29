@@ -54,8 +54,8 @@ public class AgentPokladne extends Agent
 	private void init()
 	{
 		new ManagerPokladne(Id.managerPokladne, mySim(), this);
-		new Scheduler2(Id.scheduler2, mySim(), this);
 		new ProcesPlatenia(Id.procesPlatenia, mySim(), this);
+		new Scheduler2(Id.scheduler2, mySim(), this);
 		new DotazNaZaradenieDoRaduPriPokladniach(Id.dotazNaZaradenieDoRaduPriPokladniach, mySim(), this);
 		new DotazNaZaradneieDoPokladne(Id.dotazNaZaradneieDoPokladne, mySim(), this);
 		addOwnMessage(Mc.init);

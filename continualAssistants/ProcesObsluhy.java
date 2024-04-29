@@ -80,12 +80,12 @@ public class ProcesObsluhy extends Process
 	{
 		switch (message.code())
 		{
-		case Mc.obsluhaHotova:
-			processObsluhaHotova(message);
-		break;
-
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.obsluhaHotova:
+			processObsluhaHotova(message);
 		break;
 
 		default:

@@ -17,14 +17,14 @@ public class Id extends IdList
 	public static final int managerObsluzneMiesta = 107;
 	public static final int managerPredajna = 108;
 	public static final int managerAutomat = 109;
-	public static final int procesObsluhy = 1003;
 	public static final int dotazNaZaradneieDoPokladne = 1009;
+	public static final int procesObsluhy = 1003;
 	public static final int procesPlatenia = 1004;
 	public static final int dotazNaZaradenieDoRaduPriPokladniach = 1010;
 	public static final int dotazZmestiSaDoObsluznych = 1011;
 	public static final int planovacPrichodov = 1001;
-	public static final int dotazZaradNaObsluzne = 1008;
 	public static final int scheduler1 = 1005;
+	public static final int dotazZaradNaObsluzne = 1008;
 	public static final int scheduler2 = 1006;
 	public static final int procesZadavaniaDoAutomatu = 1002;
 	//meta! tag="end"

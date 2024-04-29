@@ -3,14 +3,15 @@ package continualAssistants;
 import OSPABA.*;
 import OSPRNG.ExponentialRNG;
 import Osoby.Osoba;
-import Rozdelenia.Exponencialne;
+import Osoby.StavyOsoby;
 import simulation.*;
 import agents.*;
 
 //meta! id="27"
 public class PlanovacPrichodov extends Scheduler
 {
-	private ExponentialRNG prichodLudi = new ExponentialRNG((double)60/30);
+	private ExponentialRNG prichodLudiBezny = new ExponentialRNG((double)60*60/30);
+	//private ExponentialRNG prichodLudiBezny = new ExponentialRNG((double)60*60/15);
 	public PlanovacPrichodov(int id, Simulation mySim, CommonAgent myAgent)
 	{
 		super(id, mySim, myAgent);
@@ -26,17 +27,18 @@ public class PlanovacPrichodov extends Scheduler
 	//meta! sender="AgentOkolia", id="28", type="Start"
 	public void processStart(MessageForm message)
 	{
-		MyMessage sprava = new MyMessage((MyMessage) message);
 		message.setCode(Mc.novyZakaznik);
-		hold(prichodLudi.sample(), message);
+		hold(prichodLudiBezny.sample(), message);
 	}
 
 	//meta! sender="AgentOkolia", id="29", type="Notice"
 	public void processNovyZakaznik(MessageForm message)
 	{
-		MyMessage msg = new MyMessage((MyMessage) message);
-		hold(prichodLudi.sample(), msg);
+		MyMessage msg = new MyMessage((MyMessage)message);
+		hold(prichodLudiBezny.sample(), msg);
+
 		((MyMessage)message).setZakaznik(new Osoba(mySim()));
+		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
 		assistantFinished(message);
 	}
 

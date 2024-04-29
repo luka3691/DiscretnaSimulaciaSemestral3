@@ -31,7 +31,7 @@ public class ManagerModelu extends Manager
 	public void processPrichodZakaznika(MessageForm message)
 	{
 		message.setAddressee(mySim().findAgent(Id.agentPredajna));
-		message.setCode(Mc.zakaznikVPredajni);
+		message.setCode(Mc.zadavanieDoAutomatu);
 		request(message);
 	}
 

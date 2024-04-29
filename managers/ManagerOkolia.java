@@ -70,16 +70,16 @@ public class ManagerOkolia extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.init:
-			processInit(message);
-		break;
-
 		case Mc.finish:
 			processFinish(message);
 		break;
 
 		case Mc.odchodZakaznika:
 			processOdchodZakaznika(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:

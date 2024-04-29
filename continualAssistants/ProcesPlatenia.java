@@ -57,12 +57,12 @@ public class ProcesPlatenia extends Process
 	{
 		switch (message.code())
 		{
-		case Mc.start:
-			processStart(message);
-		break;
-
 		case Mc.platenieHotove:
 			processPlatenieHotove(message);
+		break;
+
+		case Mc.start:
+			processStart(message);
 		break;
 
 		default:

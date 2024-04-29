@@ -44,6 +44,7 @@ public class ManagerAutomat extends Manager
 
 		if (predajna.isAutomatIsEmpty() /* && predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())*/) {
 			predajna.setAutomatIsEmpty(false);
+			sprava.getZakaznik().setStav(StavyOsoby.ZADAVANIE_DO_AUTOMATU);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
 			startContinualAssistant(sprava);
 
@@ -52,7 +53,7 @@ public class ManagerAutomat extends Manager
 			predajna.getFrontZakaznikov().add(sprava.getZakaznik());
 			//predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
 		}
-
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 
 	}
 
@@ -87,6 +88,11 @@ public class ManagerAutomat extends Manager
 		}
 	}
 
+	//meta! sender="AgentPredajna", id="121", type="Request"
+	public void processSpatnePrevzatie(MessageForm message)
+	{
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -97,20 +103,24 @@ public class ManagerAutomat extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.zadavanieDoAutomatu:
-			processZadavanieDoAutomatu(message);
+		case Mc.finish:
+			processFinish(message);
 		break;
 
 		case Mc.init:
 			processInit(message);
 		break;
 
-		case Mc.uvolnenieAutomatu:
-			processUvolnenieAutomatu(message);
+		case Mc.zadavanieDoAutomatu:
+			processZadavanieDoAutomatu(message);
 		break;
 
-		case Mc.finish:
-			processFinish(message);
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
+		case Mc.uvolnenieAutomatu:
+			processUvolnenieAutomatu(message);
 		break;
 
 		default:

@@ -264,7 +264,7 @@ public class GUIapp implements ISimDelegate {
                 zakazniciModel.addRow(new Object[]{sim.getStavyOsob().get(0), sim.getStavyOsob().get(1), sim.getStavyOsob().get(2)});
                 sim.getStavyOsob().clear();
             }
-            casLabel.setText(formatTime(simulacnyCas + 7 * 3600));
+            casLabel.setText(formatTime(simulacnyCas + 9 * 60* 60));
             /*
             pocetLudiPredAutomatom.setText(String.valueOf(sim.getOsobyQueue().size()));
             for (int i = 0; i < pocetPokladni; i++) {

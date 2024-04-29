@@ -87,6 +87,11 @@ public class ManagerPredajna extends Manager
 		}
 	}
 
+	//meta! sender="AgentAutomat", id="121", type="Response"
+	public void processSpatnePrevzatie(MessageForm message)
+	{
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -100,26 +105,14 @@ public class ManagerPredajna extends Manager
 		case Mc.endObednejPrestavky:
 			switch (message.sender().id())
 			{
-			case Id.agentObsluzneMiesta:
-				processEndObednejPrestavkyAgentObsluzneMiesta(message);
-			break;
-
 			case Id.agentPokladne:
 				processEndObednejPrestavkyAgentPokladne(message);
 			break;
+
+			case Id.agentObsluzneMiesta:
+				processEndObednejPrestavkyAgentObsluzneMiesta(message);
+			break;
 			}
-		break;
-
-		case Mc.obsluhaZakaznika:
-			processObsluhaZakaznika(message);
-		break;
-
-		case Mc.uvolnenieObsluzneho:
-			processUvolnenieObsluzneho(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
 		break;
 
 		case Mc.platenieUPokoladne:
@@ -128,6 +121,22 @@ public class ManagerPredajna extends Manager
 
 		case Mc.zadavanieDoAutomatu:
 			processZadavanieDoAutomatu(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
+		break;
+
+		case Mc.uvolnenieObsluzneho:
+			processUvolnenieObsluzneho(message);
+		break;
+
+		case Mc.obsluhaZakaznika:
+			processObsluhaZakaznika(message);
+		break;
+
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
 		break;
 
 		case Mc.zakaznikVPredajni:

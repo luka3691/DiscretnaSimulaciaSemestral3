@@ -20,6 +20,7 @@ public class Mc extends IdList
 	public static final int platenieHotove = 1027;
 	public static final int zadavanieDoAutomatu = 1014;
 	public static final int platenieUPokoladne = 1015;
+	public static final int spatnePrevzatie = 1028;
 	public static final int uvolnenieAutomatu = 1020;
 	//meta! tag="end"
 
