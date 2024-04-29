@@ -170,7 +170,7 @@ public class ManagerObsluzneMiesta extends Manager
 
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
-		((MyMessage) message).getZakaznik().setNadrozmernaObjednavka(false);
+		((MyMessage) message).getZakaznik().setNechalTovarNaVydajni(false);
 		message.setCode(Mc.spatnePrevzatie);
 
 		response(message);

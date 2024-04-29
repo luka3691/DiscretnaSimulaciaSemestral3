@@ -35,6 +35,9 @@ public class ProcesPlatenia extends Process
 		} else {
 			hold(trvaniePlatbyKrata.sample(), message);
 		}
+		if (message.stack().size() == 1) {
+			System.out.println("Chyba");
+		}
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -48,6 +51,9 @@ public class ProcesPlatenia extends Process
 	//meta! sender="AgentPokladne", id="111", type="Notice"
 	public void processPlatenieHotove(MessageForm message)
 	{
+		if (message.stack().size() == 1) {
+			System.out.println("Chyba");
+		}
 		assistantFinished(message);
 	}
 
@@ -55,6 +61,9 @@ public class ProcesPlatenia extends Process
 	@Override
 	public void processMessage(MessageForm message)
 	{
+		if (message.stack().size() <= 1) {
+			System.out.println("Chyba");
+		}
 		switch (message.code())
 		{
 		case Mc.platenieHotove:

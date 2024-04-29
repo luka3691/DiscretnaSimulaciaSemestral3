@@ -63,6 +63,13 @@ public class ManagerAutomat extends Manager
 	//meta! sender="AgentPredajna", id="63", type="Notice"
 	public void processUvolnenieAutomatu(MessageForm message)
 	{
+		myAgent().setJeBlokovany(false);
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		if (!myAgent().getFrontZakaznikov().isEmpty() && !myAgent().isJeBlokovany()) {
+			sprava.setZakaznik(myAgent().getFrontZakaznikov().poll());
+			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
+			startContinualAssistant(sprava);
+		}
 	}
 
 	//meta! sender="ProcesZadavaniaDoAutomatu", id="31", type="Finish"
@@ -71,7 +78,7 @@ public class ManagerAutomat extends Manager
 		MyMessage sprava = new MyMessage((MyMessage) message);
 		AgentAutomat predajna = (AgentAutomat) myAgent();
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.KONIEC_ZADAVANIA_DO_AUTOMATU);
-		if (!predajna.getFrontZakaznikov().isEmpty() /*&& predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())*/) {
+		if (!predajna.getFrontZakaznikov().isEmpty() && !predajna.isJeBlokovany()) {
 			sprava.setZakaznik(predajna.getFrontZakaznikov().poll());
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
 			startContinualAssistant(sprava);
@@ -92,10 +99,6 @@ public class ManagerAutomat extends Manager
 		}
 	}
 
-	//meta! userInfo="Removed from model"
-	public void processSpatnePrevzatie(MessageForm message)
-	{
-	}
 
 	//meta! sender="ZatvaraniePredajneAutomat", id="128", type="Finish"
 	public void processFinishZatvaraniePredajneAutomat(MessageForm message)

@@ -40,6 +40,9 @@ public class ManagerPredajna extends Manager
 		message.setAddressee(myAgent().mySim().findAgent(Id.agentObsluzneMiesta));
 		message.setSender(myAgent());
 		message.setCode(Mc.obsluhaZakaznika);
+		if (message.stack().isEmpty()) {
+			System.out.println("Chyba");
+		}
 		request(message);
 	}
 
@@ -54,6 +57,9 @@ public class ManagerPredajna extends Manager
 		message.setAddressee(myAgent().mySim().findAgent(Id.agentAutomat));
 		message.setSender(myAgent());
 		message.setCode(Mc.zadavanieDoAutomatu);
+		if (message.stack().isEmpty()) {
+			System.out.println("Chyba");
+		}
 		request(message);
 	}
 
@@ -73,6 +79,9 @@ public class ManagerPredajna extends Manager
 		message.setAddressee(myAgent().mySim().findAgent(Id.agentPokladne));
 		message.setSender(myAgent());
 		message.setCode(Mc.platenieUPokoladne);
+		if (message.stack().isEmpty()) {
+			System.out.println("Chyba");
+		}
 		request(message);
 	}
 
@@ -104,8 +113,12 @@ public class ManagerPredajna extends Manager
 			//predajna.getPriemerCasVObchode().pridajZaznam(predajna.getSimCas() - osoba.getCasPrichodu());
 			//int pocetObsluzenych = predajna.getPocetObsluzenychZakaznikov() + 1;
 			//predajna.setPocetObsluzenychZakaznikov(pocetObsluzenych);
+			message.setAddressee(myAgent().mySim().findAgent(Id.agentModelu));
+			message.setSender(myAgent());
+			message.setCode(Mc.odchodZakaznika);
 			response(message);
 		}
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"

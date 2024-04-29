@@ -16,6 +16,7 @@ public class AgentAutomat extends Agent
 {
 	private SimQueue<Osoba> frontZakaznikov;
 	private boolean automatIsEmpty;
+	private boolean jeBlokovany;
 	private Stat priemerVytazenieAutomatu;
 	private Stat priemerCakanieVRadePredAutomatom;
 	private WStat priemerDlzkaRaduAutomat;
@@ -35,6 +36,7 @@ public class AgentAutomat extends Agent
 		priemerDlzkaRaduAutomat = new WStat(mySim());
 		frontZakaznikov = new SimQueue<>();
 		automatIsEmpty = true;
+		jeBlokovany = false;
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -73,5 +75,13 @@ public class AgentAutomat extends Agent
 
 	public WStat getPriemerDlzkaRaduAutomat() {
 		return priemerDlzkaRaduAutomat;
+	}
+
+	public boolean isJeBlokovany() {
+		return jeBlokovany;
+	}
+
+	public void setJeBlokovany(boolean jeBlokovany) {
+		this.jeBlokovany = jeBlokovany;
 	}
 }

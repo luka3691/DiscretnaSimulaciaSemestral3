@@ -78,8 +78,13 @@ public class ManagerPokladne extends Manager
 			predajna.setPocetObsluzenychZakaznikov(pocetObsluzenych);
 		}
 */
+		if (message.stack().size() == 1) {
+			System.out.println("Chyba");
+		}
+		((MyMessage) message).getZakaznik().setStav(StavyOsoby.ODCHADZA);
 		message.setCode(Mc.spatnePrevzatie);
 		response(message);
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
 	//meta! sender="AgentPredajna", id="49", type="Request"
@@ -125,6 +130,9 @@ public class ManagerPokladne extends Manager
 	@Override
 	public void processMessage(MessageForm message)
 	{
+		if (message.stack().size() == 1) {
+			System.out.println("Chyba");
+		}
 		switch (message.code())
 		{
 		case Mc.platenieUPokoladne:

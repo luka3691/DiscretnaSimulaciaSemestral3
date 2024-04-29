@@ -63,6 +63,9 @@ public class Osoba extends Entity {
         return nechalTovarNaVydajni;
     }
 
+    public void setNechalTovarNaVydajni(boolean nechalTovarNaVydajni) {
+        this.nechalTovarNaVydajni = nechalTovarNaVydajni;
+    }
 
     public TypZakaznika getTypZakaznika() {
         return typZakaznika;
