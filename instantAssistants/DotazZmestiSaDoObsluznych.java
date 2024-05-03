@@ -15,6 +15,11 @@ public class DotazZmestiSaDoObsluznych extends Query
 	@Override
 	public void execute(MessageForm message)
 	{
+		if (myAgent().getOsobyQueue().size() + myAgent().getOnlineQueue().size() <= 7) {
+			message.setMsgResult(1);
+		} else {
+			message.setMsgResult(0);
+		}
 	}
 
 	@Override
@@ -22,7 +27,6 @@ public class DotazZmestiSaDoObsluznych extends Query
 	{
 		return (AgentObsluzneMiesta)super.myAgent();
 	}
-
 
 
 }

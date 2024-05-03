@@ -50,6 +50,7 @@ public class AgentAutomat extends Agent
 		addOwnMessage(Mc.zadavanieDoAutomatu);
 		addOwnMessage(Mc.zadavanieDoAutomatuUkoncene);
 		addOwnMessage(Mc.uvolnenieAutomatu);
+		addOwnMessage(Mc.zablokovanieAutomatu);
 	}
 	//meta! tag="end"
 

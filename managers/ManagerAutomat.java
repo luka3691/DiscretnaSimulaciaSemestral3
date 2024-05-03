@@ -45,7 +45,7 @@ public class ManagerAutomat extends Manager
 		//predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
 		//ak je automat prazdny a zmesti sa do radu pred obsluznymi rovno ho zarad do automatu inak ho zarad do radu
 
-		if (predajna.isAutomatIsEmpty() /* && predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())*/) {
+		if (predajna.isAutomatIsEmpty() && myAgent().getFrontZakaznikov().isEmpty() && !predajna.isJeBlokovany()) {
 			predajna.setAutomatIsEmpty(false);
 			sprava.getZakaznik().setStav(StavyOsoby.ZADAVANIE_DO_AUTOMATU);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
@@ -64,8 +64,11 @@ public class ManagerAutomat extends Manager
 	public void processUvolnenieAutomatu(MessageForm message)
 	{
 		myAgent().setJeBlokovany(false);
-		MyMessage sprava = new MyMessage((MyMessage) message);
 		if (!myAgent().getFrontZakaznikov().isEmpty() && !myAgent().isJeBlokovany()) {
+			MyMessage sprava = new MyMessage((MyMessage) message);
+			message.stack().add(mySim().findAgent(Id.agentModelu));
+			message.stack().add(myAgent());
+			myAgent().setAutomatIsEmpty(false);
 			sprava.setZakaznik(myAgent().getFrontZakaznikov().poll());
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
 			startContinualAssistant(sprava);
@@ -105,6 +108,13 @@ public class ManagerAutomat extends Manager
 	{
 	}
 
+
+	//meta! sender="AgentPredajna", id="150", type="Notice"
+	public void processZablokovanieAutomatu(MessageForm message)
+	{
+		myAgent().setJeBlokovany(true);
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -134,6 +144,10 @@ public class ManagerAutomat extends Manager
 
 		case Mc.zadavanieDoAutomatu:
 			processZadavanieDoAutomatu(message);
+		break;
+
+		case Mc.zablokovanieAutomatu:
+			processZablokovanieAutomatu(message);
 		break;
 
 		case Mc.uvolnenieAutomatu:

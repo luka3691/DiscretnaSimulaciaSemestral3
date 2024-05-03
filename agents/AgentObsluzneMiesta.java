@@ -71,11 +71,9 @@ public class AgentObsluzneMiesta extends Agent
 		new SpatnePrevzatie(Id.spatnePrevzatie, mySim(), this);
 		new DotazZmestiSaDoObsluznych(Id.dotazZmestiSaDoObsluznych, mySim(), this);
 		new ProcesObsluhy(Id.procesObsluhy, mySim(), this);
-		addOwnMessage(Mc.uvolneniePredajne);
 		addOwnMessage(Mc.obsluhaZakaznika);
 		addOwnMessage(Mc.spatnePrevzatieHotove);
 		addOwnMessage(Mc.spatnePrevzatie);
-		addOwnMessage(Mc.startObednejPrestavky);
 		addOwnMessage(Mc.obsluhaHotova);
 	}
 	//meta! tag="end"

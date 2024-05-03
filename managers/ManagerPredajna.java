@@ -49,6 +49,11 @@ public class ManagerPredajna extends Manager
 	//meta! sender="AgentObsluzneMiesta", id="21", type="Notice"
 	public void processUvolnenieObsluzneho(MessageForm message)
 	{
+		MyMessage copy = new MyMessage((MyMessage) message);
+		message.setAddressee(myAgent().mySim().findAgent(Id.agentAutomat));
+		message.setSender(myAgent());
+		message.setCode(Mc.uvolnenieAutomatu);
+		notice(copy);
 	}
 
 	//meta! sender="AgentAutomat", id="48", type="Response"
@@ -63,10 +68,6 @@ public class ManagerPredajna extends Manager
 		request(message);
 	}
 
-	//meta! sender="AgentObsluzneMiesta", id="71", type="Notice"
-	public void processEndObednejPrestavkyAgentObsluzneMiesta(MessageForm message)
-	{
-	}
 
 	//meta! sender="AgentPokladne", id="25", type="Notice"
 	public void processEndObednejPrestavkyAgentPokladne(MessageForm message)
@@ -121,6 +122,22 @@ public class ManagerPredajna extends Manager
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
+
+	//meta! sender="AgentObsluzneMiesta", id="143", type="Notice"
+	public void processEndObednejPrestavkyAgentObsluzneMiesta(MessageForm message)
+	{
+	}
+
+	//meta! sender="AgentObsluzneMiesta", id="144", type="Notice"
+	public void processZablokovanieAutomatu(MessageForm message)
+	{
+		MyMessage copy = new MyMessage((MyMessage) message);
+		copy.setAddressee(myAgent().mySim().findAgent(Id.agentAutomat));
+		copy.setSender(myAgent());
+		copy.setCode(Mc.zablokovanieAutomatu);
+		notice(copy);
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -154,6 +171,10 @@ public class ManagerPredajna extends Manager
 
 		case Mc.zadavanieDoAutomatu:
 			processZadavanieDoAutomatu(message);
+		break;
+
+		case Mc.zablokovanieAutomatu:
+			processZablokovanieAutomatu(message);
 		break;
 
 		case Mc.init:

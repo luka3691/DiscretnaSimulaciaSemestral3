@@ -130,9 +130,6 @@ public class ManagerPokladne extends Manager
 	@Override
 	public void processMessage(MessageForm message)
 	{
-		if (message.stack().size() == 1) {
-			System.out.println("Chyba");
-		}
 		switch (message.code())
 		{
 		case Mc.platenieUPokoladne:

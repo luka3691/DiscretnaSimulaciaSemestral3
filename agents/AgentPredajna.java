@@ -33,6 +33,7 @@ public class AgentPredajna extends Agent
 		addOwnMessage(Mc.spatnePrevzatie);
 		addOwnMessage(Mc.endObednejPrestavky);
 		addOwnMessage(Mc.platenieUPokoladne);
+		addOwnMessage(Mc.zablokovanieAutomatu);
 		addOwnMessage(Mc.zakaznikVPredajni);
 	}
 	//meta! tag="end"

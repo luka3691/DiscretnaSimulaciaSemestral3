@@ -449,10 +449,10 @@
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <majorTickSpacing value="100"/>
+                      <majorTickSpacing value="250"/>
                       <maximum value="5000"/>
                       <minimum value="10"/>
-                      <minorTickSpacing value="50"/>
+                      <minorTickSpacing value="100"/>
                       <paintLabels value="true"/>
                       <paintTicks value="true"/>
                       <snapToTicks value="true"/>

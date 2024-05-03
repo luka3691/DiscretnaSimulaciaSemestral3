@@ -5,17 +5,17 @@ import OSPABA.*;
 public class Mc extends IdList
 {
 	//meta! userInfo="Generated code: do not modify", tag="begin"
-	public static final int startObednejPrestavky = 1022;
 	public static final int vyhodZRadu = 1029;
-	public static final int endObednejPrestavky = 1023;
 	public static final int spatnePrevzatie = 1030;
-	public static final int uvolneniePredajne = 1024;
 	public static final int prichodZakaznika = 1001;
 	public static final int spatnePrevzatieHotove = 1031;
 	public static final int odchodZakaznika = 1002;
+	public static final int endObednejPrestavky = 1032;
 	public static final int zakaznikVPredajni = 1004;
+	public static final int zablokovanieAutomatu = 1033;
 	public static final int init = 1005;
 	public static final int uvolnenieObsluzneho = 1007;
+	public static final int startObednejPrestavky = 1010;
 	public static final int novyZakaznik = 1012;
 	public static final int zadavanieDoAutomatuUkoncene = 1025;
 	public static final int obsluhaHotova = 1026;

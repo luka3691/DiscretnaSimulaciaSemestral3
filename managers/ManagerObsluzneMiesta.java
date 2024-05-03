@@ -32,7 +32,7 @@ public class ManagerObsluzneMiesta extends Manager
 		}
 	}
 
-	//meta! sender="AgentPredajna", id="72", type="Notice"
+	//meta! userInfo="Removed from model"
 	public void processUvolneniePredajne(MessageForm message)
 	{
 	}
@@ -72,10 +72,11 @@ public class ManagerObsluzneMiesta extends Manager
 			 */
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_OSBLUHOU);
 		};
+		//odoslanieNotifikacie(sprava);
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
-	//meta! sender="AgentPredajna", id="69", type="Notice"
+	//meta! userInfo="Removed from model"
 	public void processStartObednejPrestavky(MessageForm message)
 	{
 	}
@@ -110,7 +111,7 @@ public class ManagerObsluzneMiesta extends Manager
 			sprava.setZakaznik(novaOsoba);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
 			startContinualAssistant(sprava);
-
+			//odoslanieNotifikacie(message);
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 
@@ -167,7 +168,7 @@ public class ManagerObsluzneMiesta extends Manager
 			sprava.setZakaznik(novaOsoba);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
 			startContinualAssistant(sprava);
-
+			//odoslanieNotifikacie(message);
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 		((MyMessage) message).getZakaznik().setNechalTovarNaVydajni(false);
@@ -175,6 +176,7 @@ public class ManagerObsluzneMiesta extends Manager
 
 		response(message);
 	}
+
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
@@ -207,16 +209,8 @@ public class ManagerObsluzneMiesta extends Manager
 			}
 		break;
 
-		case Mc.uvolneniePredajne:
-			processUvolneniePredajne(message);
-		break;
-
 		case Mc.obsluhaZakaznika:
 			processObsluhaZakaznika(message);
-		break;
-
-		case Mc.startObednejPrestavky:
-			processStartObednejPrestavky(message);
 		break;
 
 		default:
@@ -231,5 +225,18 @@ public class ManagerObsluzneMiesta extends Manager
 	{
 		return (AgentObsluzneMiesta)super.myAgent();
 	}
-
+	private void odoslanieNotifikacie(MessageForm message) {
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		sprava.setAddressee(myAgent().findAssistant(Id.dotazZmestiSaDoObsluznych));
+		execute(sprava);
+		if (sprava.msgResult() == 0) {
+			sprava.setAddressee(mySim().findAgent(Id.agentPredajna));
+			sprava.setCode(Mc.zablokovanieAutomatu);
+			notice(sprava);
+		} else {
+			sprava.setAddressee(mySim().findAgent(Id.agentPredajna));
+			sprava.setCode(Mc.uvolnenieAutomatu);
+			notice(sprava);
+		}
+	}
 }
