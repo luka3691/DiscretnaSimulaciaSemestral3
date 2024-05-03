@@ -41,13 +41,16 @@ public class ProcesObsluhy extends Process
 	public void processStart(MessageForm message)
 	{
 		message.setCode(Mc.obsluhaHotova);
+		double trvanieVydavaniaTovaru;
 		if (((MyMessage)message).getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
-			hold(casNaOdovzadnieOnlineTovaru.sample(), message);
-		} else {
-			double trvanieVydavaniaTovaru = getTravnieObjednavky() + casNaNadiktovanieObjednavky.sample();
+			trvanieVydavaniaTovaru = getTravnieObjednavky() + casNaOdovzadnieOnlineTovaru.sample();
 			hold(trvanieVydavaniaTovaru, message);
+			myAgent().getPriemerVytazenostObsluznychOnline().get(((MyMessage) message).getZakaznik().getIdObsluzneho()).addSample(trvanieVydavaniaTovaru);
+		} else {
+			trvanieVydavaniaTovaru = getTravnieObjednavky() + casNaNadiktovanieObjednavky.sample();
+			hold(trvanieVydavaniaTovaru, message);
+			myAgent().getPriemerVytazenostObsluznychOstatne().get(((MyMessage) message).getZakaznik().getIdObsluzneho()).addSample(trvanieVydavaniaTovaru);
 		}
-
 	}
 	public double getTravnieObjednavky() {
 		double typObjednavky = generovanieZlozitosti.sample();

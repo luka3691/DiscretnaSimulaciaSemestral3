@@ -50,6 +50,8 @@ public class ManagerOkolia extends Manager
 	public void processOdchodZakaznika(MessageForm message)
 	{
 		//nic
+		myAgent().getPriemerCasVObchode().addSample(mySim().currentTime() - ((MyMessage)message).getZakaznik().getCasPrichodu());
+		myAgent().incPocetZakaznikov();
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

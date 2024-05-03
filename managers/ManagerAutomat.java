@@ -42,7 +42,7 @@ public class ManagerAutomat extends Manager
 		MyMessage sprava = new MyMessage((MyMessage) message);
 		AgentAutomat predajna = (AgentAutomat) myAgent();
 		sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_AUTOMATOM);
-		//predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
+		myAgent().getPriemerDlzkaRaduAutomat().addSample(myAgent().getFrontZakaznikov().size());
 		//ak je automat prazdny a zmesti sa do radu pred obsluznymi rovno ho zarad do automatu inak ho zarad do radu
 
 		if (predajna.isAutomatIsEmpty() && myAgent().getFrontZakaznikov().isEmpty() && !predajna.isJeBlokovany()) {
@@ -54,7 +54,7 @@ public class ManagerAutomat extends Manager
 		} else {
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_AUTOMATOM);
 			predajna.getFrontZakaznikov().add(sprava.getZakaznik());
-			//predajna.getPriemerDlzkaRadu().pridajZaznam(predajna.getOsobyQueue().size(), predajna.getSimCas());
+			myAgent().getPriemerDlzkaRaduAutomat().addSample(myAgent().getFrontZakaznikov().size());
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 
@@ -71,6 +71,7 @@ public class ManagerAutomat extends Manager
 			myAgent().setAutomatIsEmpty(false);
 			sprava.setZakaznik(myAgent().getFrontZakaznikov().poll());
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
+			myAgent().getPriemerDlzkaRaduAutomat().addSample(myAgent().getFrontZakaznikov().size());
 			startContinualAssistant(sprava);
 		}
 	}
@@ -84,6 +85,7 @@ public class ManagerAutomat extends Manager
 		if (!predajna.getFrontZakaznikov().isEmpty() && !predajna.isJeBlokovany()) {
 			sprava.setZakaznik(predajna.getFrontZakaznikov().poll());
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
+			myAgent().getPriemerDlzkaRaduAutomat().addSample(myAgent().getFrontZakaznikov().size());
 			startContinualAssistant(sprava);
 		} else {
 			predajna.setAutomatIsEmpty(true);

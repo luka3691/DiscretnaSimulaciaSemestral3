@@ -120,4 +120,5 @@ public class Osoba extends Entity {
         }
         return infoOZakaz;
     }
+
 }

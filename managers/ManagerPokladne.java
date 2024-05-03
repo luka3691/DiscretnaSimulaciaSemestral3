@@ -65,21 +65,7 @@ public class ManagerPokladne extends Manager
 			//spravaCopy.setAddressee(proces());
 			startContinualAssistant(spravaCopy);
 			//statistiky
-			//predajna.getPriemerDlzkaRadovPriPokladniach().get(osoba.getIdPokladne()).pridajZaznam(predajna.getPokladne().getRady()[osoba.getIdPokladne()].size(), predajna.getSimCas());
-		}
-		/*
-		if (osoba.isNechalTovarNaVydajni()) {
-			osoba.setStav(StavyOsoby.IDE_SI_PRE_NADROZMERNY_TOVAR);
-			predajna.naplanujUdalost(new PrevzatieNadrozmernehoTovaru(predajna, predajna.getSimCas() + predajna.getNahodnyJav().getSpatnePrevzatieTovaru(), osoba));
-		} else {
-			osoba.setStav(StavyOsoby.ODCHADZA);
-			predajna.getPriemerCasVObchode().pridajZaznam(predajna.getSimCas() - osoba.getCasPrichodu());
-			int pocetObsluzenych = predajna.getPocetObsluzenychZakaznikov() + 1;
-			predajna.setPocetObsluzenychZakaznikov(pocetObsluzenych);
-		}
-*/
-		if (message.stack().size() == 1) {
-			System.out.println("Chyba");
+			myAgent().getPriemerDlzkaRadovPriPokladniach().get(idPokladne).addSample(myAgent().getRady()[idPokladne].size());
 		}
 		((MyMessage) message).getZakaznik().setStav(StavyOsoby.ODCHADZA);
 		message.setCode(Mc.spatnePrevzatie);
@@ -108,7 +94,7 @@ public class ManagerPokladne extends Manager
 			int idRaduNaZaradenie = sprava.getCisloPokladne();
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_POKLADNOU);
 			myAgent().getRady()[idRaduNaZaradenie].add(sprava.getZakaznik());
-			//predajna.getPriemerDlzkaRadovPriPokladniach().get(idRaduNaZaradenie).pridajZaznam(predajna.getPokladne().getRady()[idRaduNaZaradenie].size(), predajna.getSimCas());
+			myAgent().getPriemerDlzkaRadovPriPokladniach().get(idRaduNaZaradenie).addSample(myAgent().getRady()[idRaduNaZaradenie].size());
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 

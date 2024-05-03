@@ -30,14 +30,16 @@ public class ProcesPlatenia extends Process
 	{
 		message.setCode(Mc.platenieHotove);
 		double typPlatby = generovanieTypuPlatby.sample();
+		double trvaniePlatby;
 		if (typPlatby < 0.4) {
-			hold(trvaniePlatbyHotovost.sample(), message);
+			trvaniePlatby = trvaniePlatbyHotovost.sample();
+			hold(trvaniePlatby, message);
 		} else {
-			hold(trvaniePlatbyKrata.sample(), message);
+			trvaniePlatby = trvaniePlatbyKrata.sample();
+			hold(trvaniePlatby, message);
 		}
-		if (message.stack().size() == 1) {
-			System.out.println("Chyba");
-		}
+		myAgent().getPriemerVytazenostPokladni().get(((MyMessage)message).getZakaznik().getIdPokladne()).addSample(trvaniePlatby);
+
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -51,9 +53,7 @@ public class ProcesPlatenia extends Process
 	//meta! sender="AgentPokladne", id="111", type="Notice"
 	public void processPlatenieHotove(MessageForm message)
 	{
-		if (message.stack().size() == 1) {
-			System.out.println("Chyba");
-		}
+
 		assistantFinished(message);
 	}
 

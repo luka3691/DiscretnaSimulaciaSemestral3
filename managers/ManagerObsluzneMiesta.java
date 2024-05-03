@@ -60,16 +60,16 @@ public class ManagerObsluzneMiesta extends Manager
 			//zarad osobu do radu pred obsluznymi
 			myAgent().zaradDoRadu(sprava.getZakaznik());
 			/*
-			if (osoba.getTypZakaznika() == TypZakaznika.ONLINE) {
-				predajna.getPriemerDlzkaRaduPredObsluzOnline().pridajZaznam(predajna.getObsluzneMiesta().getOnlineQueue().size(), predajna.getSimCas());
-			} else {
-				predajna.getPriemerDlzkaRaduPredObsluzNormal().pridajZaznam(predajna.getObsluzneMiesta().getOsobyQueue().size(), predajna.getSimCas());
-			}
 			if (predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())) {
 				predajna.setAutomatIsEmpty(true);
 			}
-
 			 */
+
+			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+				myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+			} else {
+				myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
+			}
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_OSBLUHOU);
 		};
 		//odoslanieNotifikacie(sprava);
@@ -111,6 +111,11 @@ public class ManagerObsluzneMiesta extends Manager
 			sprava.setZakaznik(novaOsoba);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
 			startContinualAssistant(sprava);
+			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+				myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+			} else {
+				myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
+			}
 			//odoslanieNotifikacie(message);
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
@@ -169,6 +174,11 @@ public class ManagerObsluzneMiesta extends Manager
 			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
 			startContinualAssistant(sprava);
 			//odoslanieNotifikacie(message);
+			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
+				myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+			} else {
+				myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
+			}
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 		((MyMessage) message).getZakaznik().setNechalTovarNaVydajni(false);

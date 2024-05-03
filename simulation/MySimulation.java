@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class MySimulation extends ConcurrentSimulation
 {
-	private Stat priemerCasVObchode;
+
 	private Stat priemerDlzkaRaduAutomatCelkove;
 	private Stat priemerPocetLudiCelkovy;
 	private Stat priemerCasVObchodeCelkovy;
@@ -158,9 +158,6 @@ public class MySimulation extends ConcurrentSimulation
 
 	}
 
-	public Stat getPriemerCasVObchode() {
-		return priemerCasVObchode;
-	}
 
 	public Stat getPriemerDlzkaRaduAutomatCelkove() {
 		return priemerDlzkaRaduAutomatCelkove;
