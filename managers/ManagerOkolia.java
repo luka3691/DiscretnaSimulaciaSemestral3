@@ -31,15 +31,14 @@ public class ManagerOkolia extends Manager
 	//meta! sender="AgentModelu", id="18", type="Notice"
 	public void processInit(MessageForm message)
 	{
-		message.setAddressee(((AgentOkolia)myAgent()).findAssistant(Id.planovacPrichodov));
-		System.out.println(_mySim.currentTime());
-		startContinualAssistant(message);   // nastavy kod spravy na start
+		MyMessage prichody = new MyMessage((MyMessage) message);
+		prichody.setAddressee((myAgent()).findAssistant(Id.planovacPrichodov));
+		startContinualAssistant(prichody);
 	}
 
 	//meta! sender="PlanovacPrichodov", id="28", type="Finish"
 	public void processFinishPlanovacPrichodov(MessageForm message)
 	{
-		((AgentOkolia)myAgent()).incPocetZakaznikov();
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
 		message.setAddressee(((MySimulation)mySim()).agentModelu());
 		message.setCode(Mc.prichodZakaznika);

@@ -32,6 +32,7 @@ public class ManagerAutomat extends Manager
 	public void processInit(MessageForm message)
 	{
 		MyMessage sprava = new MyMessage((MyMessage) message);
+		sprava.setCode(Mc.start);
 		sprava.setAddressee(myAgent().findAssistant(Id.zatvaraniePredajneAutomat));
 		startContinualAssistant(sprava);
 	}
@@ -45,7 +46,7 @@ public class ManagerAutomat extends Manager
 		myAgent().getPriemerDlzkaRaduAutomat().addSample(myAgent().getFrontZakaznikov().size());
 		//ak je automat prazdny a zmesti sa do radu pred obsluznymi rovno ho zarad do automatu inak ho zarad do radu
 
-		if (predajna.isAutomatIsEmpty() && myAgent().getFrontZakaznikov().isEmpty() && !predajna.isJeBlokovany()) {
+		if (predajna.isAutomatIsEmpty() && !predajna.isJeBlokovany()) {
 			predajna.setAutomatIsEmpty(false);
 			sprava.getZakaznik().setStav(StavyOsoby.ZADAVANIE_DO_AUTOMATU);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));
@@ -64,7 +65,7 @@ public class ManagerAutomat extends Manager
 	public void processUvolnenieAutomatu(MessageForm message)
 	{
 		myAgent().setJeBlokovany(false);
-		if (!myAgent().getFrontZakaznikov().isEmpty() && !myAgent().isJeBlokovany()) {
+		if (!myAgent().getFrontZakaznikov().isEmpty() && myAgent().isAutomatIsEmpty()) {
 			MyMessage sprava = new MyMessage((MyMessage) message);
 			message.stack().add(mySim().findAgent(Id.agentModelu));
 			message.stack().add(myAgent());

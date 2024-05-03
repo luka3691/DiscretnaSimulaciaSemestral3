@@ -72,7 +72,7 @@ public class ManagerObsluzneMiesta extends Manager
 			}
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_OSBLUHOU);
 		};
-		//odoslanieNotifikacie(sprava);
+		odoslanieNotifikacie(sprava);
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
@@ -116,7 +116,7 @@ public class ManagerObsluzneMiesta extends Manager
 			} else {
 				myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
 			}
-			//odoslanieNotifikacie(message);
+			odoslanieNotifikacie(message);
 		}
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 
@@ -173,7 +173,7 @@ public class ManagerObsluzneMiesta extends Manager
 			sprava.setZakaznik(novaOsoba);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
 			startContinualAssistant(sprava);
-			//odoslanieNotifikacie(message);
+			odoslanieNotifikacie(message);
 			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
 				myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
 			} else {

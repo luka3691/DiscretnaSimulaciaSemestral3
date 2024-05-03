@@ -1,7 +1,7 @@
 package simulation;
 
 public class Config {
-    public static final double trvanieReplikacie = 30600d;
+    public static final double trvanieReplikacie = 36000d;
     public static final double casKoncaVydavaniaListkov = 28800d;
     public static final double zaciatokPrestavky = 10800d;
     public static final double trvaniePrestavky = 1800d;

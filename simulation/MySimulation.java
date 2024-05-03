@@ -112,21 +112,21 @@ public class MySimulation extends ConcurrentSimulation
 		priemerCasVObchodeCelkovy.addSample(agentOkolia().getPriemerCasVObchode().mean());
 		priemerCakanieVRadePredAutomatomCalkovy.addSample(agentAutomat().getPriemerCakanieVRadePredAutomatom().mean());
 		priemerPoslednyOdchod.addSample(currentTime());
-		priemerVytazenieAutomatuCelkove.addSample(agentAutomat().getPriemerVytazenieAutomatu().mean());
+		priemerVytazenieAutomatuCelkove.addSample(agentAutomat().getPriemerVytazenieAutomatu().sampleSize());
 		priemerDlzkaRaduPredObsluzOnlineCelkove.addSample(agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzOnline().mean());
 		priemerDlzkaRaduPredObsluzNormalCelkove.addSample(agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzNormal().mean());
 		pocetObsluzenychZakaznikovCelkove.addSample(agentOkolia().pocetZakaznikov());
 		//treba rozoznat celkove a iba co sa dostali do modelu statistiky
 
 		for (int i = 0; i < Config.pocetPokladni; i++) {
-			priemerVytazenostPokladniCelkove.get(i).addSample(agentPokladne().getPriemerVytazenostPokladni().get(i).mean());
+			priemerVytazenostPokladniCelkove.get(i).addSample(agentPokladne().getPriemerVytazenostPokladni().get(i).sampleSize());
 			priemerDlzkaRadovPriPokladniachCelkove.get(i).addSample(agentPokladne().getPriemerDlzkaRadovPriPokladniach().get(i).mean());
 		}
 		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
-			priemerVytazenostObsluznychOnlineCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOnline().get(i).mean());
+			priemerVytazenostObsluznychOnlineCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOnline().get(i).sampleSize());
 		}
 		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
-			priemerVytazenostObsluznychOstatneCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOstatne().get(i).mean());
+			priemerVytazenostObsluznychOstatneCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOstatne().get(i).sampleSize());
 		}
 
 	}

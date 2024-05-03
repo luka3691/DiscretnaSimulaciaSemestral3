@@ -49,7 +49,14 @@ public class ManagerModelu extends Manager
 		switch (message.code())
 		{
 			case Mc.init:
-				init();
+				MyMessage initOkolie = new MyMessage((MyMessage) message);
+				MyMessage initPredajne = new MyMessage((MyMessage) message);
+				initOkolie.setAddressee(mySim().findAgent(Id.agentOkolia));
+				initOkolie.setCode(Mc.init);
+				initPredajne.setAddressee(mySim().findAgent(Id.agentPredajna));
+				initPredajne.setCode(Mc.init);
+				notice(initOkolie);
+				notice(initPredajne);
 				break;
 		}
 	}
@@ -57,6 +64,7 @@ public class ManagerModelu extends Manager
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
+
 	}
 
 	@Override

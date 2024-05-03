@@ -32,6 +32,9 @@ public class ManagerPredajna extends Manager
 	//meta! sender="AgentModelu", id="20", type="Notice"
 	public void processInit(MessageForm message)
 	{
+		MyMessage initAutomat = new MyMessage((MyMessage) message);
+		initAutomat.setAddressee(myAgent().findAssistant(Id.planovacPrichodov));
+		startContinualAssistant(initAutomat);
 	}
 
 	//meta! sender="AgentObsluzneMiesta", id="46", type="Response"

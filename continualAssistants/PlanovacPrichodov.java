@@ -38,6 +38,8 @@ public class PlanovacPrichodov extends Scheduler
 		if (mySim().currentTime() + dalsiPrichod < Config.casKoncaVydavaniaListkov) {
 			MyMessage msg = new MyMessage((MyMessage)message);
 			hold(dalsiPrichod, msg);
+		} else {
+			System.out.println("here");
 		}
 		((MyMessage)message).setZakaznik(new Osoba(mySim()));
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);

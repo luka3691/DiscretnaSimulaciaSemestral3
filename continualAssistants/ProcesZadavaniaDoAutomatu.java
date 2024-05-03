@@ -30,7 +30,7 @@ public class ProcesZadavaniaDoAutomatu extends Process
 		double zadavanieDoAutomatu = casZadavaniaDoAutomatu.sample();
 		myAgent().getPriemerCakanieVRadePredAutomatom().addSample(mySim().currentTime() - ((MyMessage)message).getZakaznik().getCasPrichodu());
 		myAgent().getPriemerVytazenieAutomatu().addSample(zadavanieDoAutomatu);
- 		hold(casZadavaniaDoAutomatu.sample(), message); // naplanuje ukoncenie nakupu na cas simCas + casNakupu
+ 		hold(zadavanieDoAutomatu, message); // naplanuje ukoncenie nakupu na cas simCas + casNakupu
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

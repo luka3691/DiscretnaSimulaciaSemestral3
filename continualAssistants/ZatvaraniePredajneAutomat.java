@@ -24,8 +24,9 @@ public class ZatvaraniePredajneAutomat extends Scheduler
 	//meta! sender="AgentAutomat", id="128", type="Start"
 	public void processStart(MessageForm message)
 	{
-		message.setCode(Mc.vyhodZRadu);
-		hold(Config.casKoncaVydavaniaListkov, message); // naplanuje ukoncenie nakupu na cas simCas + casNakupu
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		sprava.setCode(Mc.vyhodZRadu);
+		hold(Config.casKoncaVydavaniaListkov, sprava); // naplanuje ukoncenie nakupu na cas simCas + casNakupu
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"

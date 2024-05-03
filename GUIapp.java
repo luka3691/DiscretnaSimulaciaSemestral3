@@ -81,12 +81,12 @@ public class GUIapp implements ISimDelegate {
         tableOdber.setModel(odberModel);
         tablePokladne.setModel(pokladneModel);
         tableZakaznici.setModel(zakazniciModel);
-        pocetObsluzField.setText("13");
+        pocetObsluzField.setText("8");
         pocetPokladField.setText("4");
         pocetReplikField.setText("25000");
         pauzaButton.setEnabled(false);
         stopButton.setEnabled(false);
-        pomalyBeh = false;
+        pomalyBeh = true;
         isStopped = new AtomicBoolean(false);
         isPaused = new AtomicBoolean(false);
 
@@ -138,6 +138,17 @@ public class GUIapp implements ISimDelegate {
 
             }
         });
+        zrýchlenýBehRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (zrýchlenýBehRadioButton.isSelected()) {
+                    zrychliBeh();
+                } else  {
+                    spomalBeh();
+                }
+            }
+
+        });
         rychlostSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -147,16 +158,7 @@ public class GUIapp implements ISimDelegate {
 
                 if (simulacia != null)
                 {
-                    if (!zrýchlenýBehRadioButton.isSelected())
-                    {
-                        spomalBeh();
-                        simulacia.setSimSpeed(intervalValue * .01, (speedMax - speedValue + .001) * .05);
-                    }
-                    else
-                    {
-                        zrychliBeh();
-                        simulacia.setMaxSimSpeed();
-                    }
+                    simulacia.setSimSpeed(intervalValue * .01, (speedMax - speedValue + .001) * .05);
                 }
             }
         });
@@ -178,13 +180,43 @@ public class GUIapp implements ISimDelegate {
         simulacia.registerDelegate(this);
 
 
-        simulacia.onReplicationWillStart((sim)
+        simulacia.onReplicationDidFinish((simu)
                 ->{
+            MySimulation sim = (MySimulation) simu;
             cisloReplikacieLabel.setText(String.valueOf(sim.currentReplication()));
-            startSimulation();
-            if (!zrýchlenýBehRadioButton.isSelected()) {
-                simulacia.setSimSpeed(simSpeed_interval(), simSpeed_duration());
+            //refresh(simulacia);
+            cisloReplikacieLabel.setText(String.valueOf(sim.currentReplication()));
+            priemerZakaznikovLabel.setText(String.valueOf(Math.round(sim.getPriemerPocetLudiCelkovy().mean() * 1000.0) / 1000.0));
+            double casVSyteme = Math.round(sim.getPriemerCasVObchodeCelkovy().mean() * 1000.0) / 1000.0;
+            priemerCasVSystemeLabel.setText((int)casVSyteme%60 + ":" + (int)(casVSyteme*60%60));
+            double casOdchodu = sim.getPriemerPoslednyOdchod().mean();
+            priemerCasOdchodLabel.setText(String.valueOf((int)casOdchodu/60 + ":" + (int)casOdchodu%60 + ":" + (int)(casOdchodu*60%60)));
+            //intervalSpolahlivostiLabel.setText(String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0]*60%60)) + ";" + String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1]*60%60)));
+            double casCakaniaVRade = sim.getPriemerCakanieVRadePredAutomatomCalkovy().mean();
+            casCakaniaPredAutomatomLabel.setText((int)casCakaniaVRade + ":" + (int)(casCakaniaVRade*60%60));
+            priemerDlzkaFrontuPredAutomatomLabel.setText(String.valueOf(Math.round(sim.getPriemerDlzkaRaduAutomatCelkove().mean() * 1000.0) / 1000.0));
+            vytazeneiAutomatuLabel.setText(Math.round(sim.getPriemerVytazenieAutomatuCelkove().mean()*100* 1000.0) / 1000.0 + "%");
+            ArrayList<String> vytazenieObsluznych = new ArrayList<>();
+
+            for (int i = 0; i < sim.agentObsluzneMiesta().getOnlineObsluzne().length; i++) {
+                vytazenieObsluznych.add(Math.round(sim.getPriemerVytazenostObsluznychOnlineCelkove().get(i).mean()*100) + "%");
             }
+
+            for (int i = 0; i < sim.agentObsluzneMiesta().getNormalneObsluzne().length; i++) {
+                vytazenieObsluznych.add(Math.round(sim.getPriemerVytazenostObsluznychOstatneCelkove().get(i).mean()*100) + "%");
+            }
+            vytazenieObsluznychLabel.setText(vytazenieObsluznych.toString());
+            ArrayList<String> vytazeniePokladni = new ArrayList<>();
+            ArrayList<String> dlzkyRadovPriPokladniach = new ArrayList<>();
+            for (int i = 0; i < pocetPokladni; i++) {
+                vytazeniePokladni.add(Math.round(sim.getPriemerVytazenostPokladniCelkove().get(i).mean()*100) + "%");
+                dlzkyRadovPriPokladniach.add(String.valueOf(Math.round(sim.getPriemerDlzkaRadovPriPokladniachCelkove().get(i).mean()*1000.0)/1000.0));
+            }
+            vytazeniePokladniLabel.setText(vytazeniePokladni.toString());
+            dlzkyRadovPriPokladniachLabel.setText(dlzkyRadovPriPokladniach.toString());
+            priemerObsluzenychLabel.setText(String.valueOf(Math.round(sim.getPocetObsluzenychZakaznikovCelkove().mean()*1000.0)/1000.0));
+            dlzkyRadovPredObsluznymiLabel.setText("Normálne: " + Math.round(sim.getPriemerDlzkaRaduPredObsluzNormalCelkove().mean()*1000.0)/1000.0 + ", Online: " + Math.round(sim.getPriemerDlzkaRaduPredObsluzOnlineCelkove().mean()*1000.0)/1000.0);
+
         });
 
     }
@@ -215,6 +247,7 @@ public class GUIapp implements ISimDelegate {
     private void zrychliBeh() {
         pomalyBeh = false;
         switchPanel("zrychlenyBehCard");
+        simulacia.setMaxSimSpeed();
     }
     private void spomalBeh() {
         pomalyBeh = true;
@@ -260,74 +293,42 @@ public class GUIapp implements ISimDelegate {
     @Override
     public void refresh(Simulation simJadro) {
         MySimulation sim =simulacia;
-        final double simulacnyCas = sim.currentTime();
-        casLabel.setText(formatTime(simulacnyCas + 9 * 60* 60));
-        if(!sim.getStavyOsob().isEmpty()) {
-            zakazniciModel.addRow(new Object[]{sim.getStavyOsob().get(0), sim.getStavyOsob().get(1), sim.getStavyOsob().get(2)});
-            sim.getStavyOsob().clear();
-        }
 
-        pocetLudiPredAutomatom.setText(String.valueOf(sim.agentAutomat().getFrontZakaznikov().size()));
-        for (int i = 0; i < Config.pocetPokladni; i++) {
-            pokladneModel.setValueAt(sim.agentPokladne().getPokladne()[i], i, 1);
-            pokladneModel.setValueAt(sim.agentPokladne().getRady()[i].size(), i, 2);
-            //pokladneModel.setValueAt(Math.round(sim.getPriemerVytazenostPokladni().get(i).getVytazenie(sim.getSimCas() - sim.getZaciatokCasu())*100) + "%", i ,3);
-            //pridat vytazenie
-        }
-        for (int i = 0; i < sim.agentObsluzneMiesta().getOnlineObsluzne().length; i++) {
-            odberModel.setValueAt(sim.agentObsluzneMiesta().getOnlineObsluzne()[i], i, 2);
-            //odberModel.setValueAt(Math.round(sim.getPriemerVytazenostObsluznychOnline().get(i).getVytazenie(sim.getSimCas() - sim.getZaciatokCasu()) * 100) + "%", i, 3);
-        }
-        for (int i = 0; i < sim.agentObsluzneMiesta().getNormalneObsluzne().length; i++) {
-            odberModel.setValueAt(sim.agentObsluzneMiesta().getNormalneObsluzne()[i], i+sim.agentObsluzneMiesta().getOnlineObsluzne().length, 2);
-            //odberModel.setValueAt(Math.round(sim.getPriemerVytazenostObsluznychOstatne().get(i).getVytazenie(sim.getSimCas() - sim.getZaciatokCasu()) * 100) + "%", i+sim.getObsluzneMiesta().getOnlineObsluzne().length, 3);
 
-        }
+        if (pomalyBeh) {
+            final double simulacnyCas = sim.currentTime();
+            casLabel.setText(formatTime(simulacnyCas + 9 * 60* 60));
+            if(!sim.getStavyOsob().isEmpty()) {
+                zakazniciModel.addRow(new Object[]{sim.getStavyOsob().get(0), sim.getStavyOsob().get(1), sim.getStavyOsob().get(2)});
+                sim.getStavyOsob().clear();
+            }
 
-        pocetOnlineZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOnlineQueue().size()));
-        pocetOstatnychZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOsobyQueue().size()));
-        obsadenyAutomatLabel.setText(String.valueOf(!sim.agentAutomat().isAutomatIsEmpty()));
-        if (!pomalyBeh) {
+            pocetLudiPredAutomatom.setText(String.valueOf(sim.agentAutomat().getFrontZakaznikov().size()));
+            for (int i = 0; i < Config.pocetPokladni; i++) {
+                pokladneModel.setValueAt(sim.agentPokladne().getPokladne()[i], i, 1);
+                pokladneModel.setValueAt(sim.agentPokladne().getRady()[i].size(), i, 2);
+                pokladneModel.setValueAt(Math.round(sim.agentPokladne().getPriemerVytazenostPokladni().get(i).sampleSize()) + "%", i ,3);
+                //pridat vytazenie
+            }
+            for (int i = 0; i < sim.agentObsluzneMiesta().getOnlineObsluzne().length; i++) {
+                odberModel.setValueAt(sim.agentObsluzneMiesta().getOnlineObsluzne()[i], i, 2);
+                odberModel.setValueAt(Math.round(sim.agentObsluzneMiesta().getPriemerVytazenostObsluznychOnline().get(i).sampleSize()) + "%", i, 3);
 
-            /*
+            }
+            for (int i = 0; i < sim.agentObsluzneMiesta().getNormalneObsluzne().length; i++) {
+                odberModel.setValueAt(sim.agentObsluzneMiesta().getNormalneObsluzne()[i], i+sim.agentObsluzneMiesta().getOnlineObsluzne().length, 2);
+                odberModel.setValueAt(Math.round(sim.agentObsluzneMiesta().getPriemerVytazenostObsluznychOstatne().get(i).sampleSize()) + "%", i+sim.agentObsluzneMiesta().getOnlineObsluzne().length, 3);
 
-            vytazenostAutomatuLabel.setText(Math.round(sim.getPriemerVytazenieAutomatu().getVytazenie(sim.getSimCas() - sim.getZaciatokCasu())*100.0) + "%");
+            }
 
-             */
+            pocetOnlineZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOnlineQueue().size()));
+            pocetOstatnychZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOsobyQueue().size()));
+            obsadenyAutomatLabel.setText(String.valueOf(!sim.agentAutomat().isAutomatIsEmpty()));
+
+            vytazenostAutomatuLabel.setText(Math.round(sim.agentAutomat().getPriemerVytazenieAutomatu().sampleSize())+ "%");
+
         } else {
-            /*
-            cisloReplikacieLabel.setText(String.valueOf(sim.getCisloReplikacie()));
-            priemerZakaznikovLabel.setText(String.valueOf(Math.round(sim.getPriemerPocetLudiCelkovy().vypocitaj() * 1000.0) / 1000.0));
-            double casVSyteme = Math.round(sim.getPriemerCasVObchodeCelkovy().vypocitaj() * 1000.0) / 1000.0;
-            priemerCasVSystemeLabel.setText((int)casVSyteme%60 + ":" + (int)(casVSyteme*60%60));
-            double casOdchodu = sim.getPriemerPoslednyOdchod().vypocitaj();
-            priemerCasOdchodLabel.setText(String.valueOf((int)casOdchodu/60 + ":" + (int)casOdchodu%60 + ":" + (int)(casOdchodu*60%60)));
-            intervalSpolahlivostiLabel.setText(String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().getIntervalSpolahlivosti()[0])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().getIntervalSpolahlivosti()[0]*60%60)) + ";" + String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().getIntervalSpolahlivosti()[1])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().getIntervalSpolahlivosti()[1]*60%60)));
-            double casCakaniaVRade = sim.getPriemerCakanieVRadePredAutomatomCalkovy().vypocitaj();
-            casCakaniaPredAutomatomLabel.setText((int)casCakaniaVRade + ":" + (int)(casCakaniaVRade*60%60));
-            priemerDlzkaFrontuPredAutomatomLabel.setText(String.valueOf(Math.round(sim.getPriemerDlzkaRaduCelkovy().vypocitaj() * 1000.0) / 1000.0));
-            vytazeneiAutomatuLabel.setText(Math.round(sim.getPriemerVytazenieAutomatuCelkove().vypocitaj()*100* 1000.0) / 1000.0 + "%");
-            ArrayList<String> vytazenieObsluznych = new ArrayList<>();
 
-            for (int i = 0; i < sim.getObsluzneMiesta().getOnlineObsluzne().length; i++) {
-                vytazenieObsluznych.add(Math.round(sim.getPriemerVytazenostObsluznychOnlineCelkove().get(i).vypocitaj()*100) + "%");
-            }
-
-            for (int i = 0; i < sim.getObsluzneMiesta().getNormalneObsluzne().length; i++) {
-                vytazenieObsluznych.add(Math.round(sim.getPriemerVytazenostObsluznychOstatneCelkove().get(i).vypocitaj()*100) + "%");
-            }
-            vytazenieObsluznychLabel.setText(vytazenieObsluznych.toString());
-            ArrayList<String> vytazeniePokladni = new ArrayList<>();
-            ArrayList<String> dlzkyRadovPriPokladniach = new ArrayList<>();
-            for (int i = 0; i < pocetPokladni; i++) {
-                vytazeniePokladni.add(Math.round(sim.getPriemerVytazenostPokladniCelkove().get(i).vypocitaj()*100) + "%");
-                dlzkyRadovPriPokladniach.add(String.valueOf(Math.round(sim.getPriemerDlzkaRadovPriPokladniachCelkove().get(i).vypocitaj()*1000.0)/1000.0));
-            }
-            vytazeniePokladniLabel.setText(vytazeniePokladni.toString());
-            dlzkyRadovPriPokladniachLabel.setText(dlzkyRadovPriPokladniach.toString());
-            priemerObsluzenychLabel.setText(String.valueOf(Math.round(sim.getPocetObsluzenychZakaznikovCelkove().vypocitaj()*1000.0)/1000.0));
-            dlzkyRadovPredObsluznymiLabel.setText("Normálne: " + Math.round(sim.getPriemerDlzkaRaduPredObsluzNormalCelkove().vypocitaj()*1000.0)/1000.0 + ", Online: " + Math.round(sim.getPriemerDlzkaRaduPredObsluzOnlineCelkove().vypocitaj()*1000.0)/1000.0);
-        */
         }
 
 
