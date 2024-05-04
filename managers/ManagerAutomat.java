@@ -109,6 +109,7 @@ public class ManagerAutomat extends Manager
 	//meta! sender="ZatvaraniePredajneAutomat", id="128", type="Finish"
 	public void processFinishZatvaraniePredajneAutomat(MessageForm message)
 	{
+		myAgent().getFrontZakaznikov().clear();
 	}
 
 
@@ -128,15 +129,19 @@ public class ManagerAutomat extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.uvolnenieAutomatu:
+			processUvolnenieAutomatu(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.procesZadavaniaDoAutomatu:
-				processFinishProcesZadavaniaDoAutomatu(message);
-			break;
-
 			case Id.zatvaraniePredajneAutomat:
 				processFinishZatvaraniePredajneAutomat(message);
+			break;
+
+			case Id.procesZadavaniaDoAutomatu:
+				processFinishProcesZadavaniaDoAutomatu(message);
 			break;
 			}
 		break;
@@ -151,10 +156,6 @@ public class ManagerAutomat extends Manager
 
 		case Mc.zablokovanieAutomatu:
 			processZablokovanieAutomatu(message);
-		break;
-
-		case Mc.uvolnenieAutomatu:
-			processUvolnenieAutomatu(message);
 		break;
 
 		default:

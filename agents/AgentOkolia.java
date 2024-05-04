@@ -12,6 +12,10 @@ public class AgentOkolia extends Agent
 {
 	private int _pocetZakaznikov;
 	private Stat priemerCasVObchode;
+	private double casOdchoduPosledneho;
+
+	private int _pocetObsluzenych;
+
 
 	public AgentOkolia(int id, Simulation mySim, Agent parent)
 	{
@@ -25,6 +29,8 @@ public class AgentOkolia extends Agent
 		super.prepareReplication();
 		// Setup component for the next replication
 		_pocetZakaznikov = 0;
+		_pocetObsluzenych = 0;
+		casOdchoduPosledneho = 0;
 		priemerCasVObchode = new Stat();
 	}
 
@@ -40,6 +46,20 @@ public class AgentOkolia extends Agent
 	}
 	//meta! tag="end"
 
+	public int pocetObsluzenychZakaznikov()
+	{ return _pocetObsluzenych; }
+
+	public void incPocetObsluzenychZakaznikov()
+	{ ++_pocetObsluzenych; }
+
+	public double getCasOdchoduPosledneho() {
+		return casOdchoduPosledneho;
+	}
+
+	public void setCasOdchoduPosledneho(double casOdchoduPosledneho) {
+		this.casOdchoduPosledneho = casOdchoduPosledneho;
+	}
+
 	public int pocetZakaznikov()
 	{ return _pocetZakaznikov; }
 
@@ -49,4 +69,6 @@ public class AgentOkolia extends Agent
 	public Stat getPriemerCasVObchode() {
 		return priemerCasVObchode;
 	}
+
+
 }

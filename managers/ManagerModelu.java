@@ -64,7 +64,6 @@ public class ManagerModelu extends Manager
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
-
 	}
 
 	@Override

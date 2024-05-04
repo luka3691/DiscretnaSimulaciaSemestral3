@@ -111,11 +111,11 @@ public class MySimulation extends ConcurrentSimulation
 		priemerDlzkaRaduAutomatCelkove.addSample(agentAutomat().getPriemerDlzkaRaduAutomat().mean());
 		priemerCasVObchodeCelkovy.addSample(agentOkolia().getPriemerCasVObchode().mean());
 		priemerCakanieVRadePredAutomatomCalkovy.addSample(agentAutomat().getPriemerCakanieVRadePredAutomatom().mean());
-		priemerPoslednyOdchod.addSample(currentTime());
-		priemerVytazenieAutomatuCelkove.addSample(agentAutomat().getPriemerVytazenieAutomatu().sampleSize());
+		priemerPoslednyOdchod.addSample(agentOkolia().getCasOdchoduPosledneho());
+		priemerVytazenieAutomatuCelkove.addSample(agentAutomat().getPriemerVytazenieAutomatu().mean());
 		priemerDlzkaRaduPredObsluzOnlineCelkove.addSample(agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzOnline().mean());
 		priemerDlzkaRaduPredObsluzNormalCelkove.addSample(agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzNormal().mean());
-		pocetObsluzenychZakaznikovCelkove.addSample(agentOkolia().pocetZakaznikov());
+		pocetObsluzenychZakaznikovCelkove.addSample(agentOkolia().pocetObsluzenychZakaznikov());
 		//treba rozoznat celkove a iba co sa dostali do modelu statistiky
 
 		for (int i = 0; i < Config.pocetPokladni; i++) {

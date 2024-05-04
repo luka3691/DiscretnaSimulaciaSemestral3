@@ -40,7 +40,6 @@ public class ZatvaraniePredajneAutomat extends Scheduler
 	//meta! sender="AgentAutomat", id="133", type="Notice"
 	public void processVyhodZRadu(MessageForm message)
 	{
-		myAgent().getFrontZakaznikov().clear();
 		assistantFinished(message);
 	}
 
@@ -50,12 +49,12 @@ public class ZatvaraniePredajneAutomat extends Scheduler
 	{
 		switch (message.code())
 		{
-		case Mc.vyhodZRadu:
-			processVyhodZRadu(message);
-		break;
-
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.vyhodZRadu:
+			processVyhodZRadu(message);
 		break;
 
 		default:

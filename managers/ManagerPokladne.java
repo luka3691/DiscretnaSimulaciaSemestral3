@@ -122,8 +122,8 @@ public class ManagerPokladne extends Manager
 			processPlatenieUPokoladne(message);
 		break;
 
-		case Mc.startObednejPrestavky:
-			processStartObednejPrestavky(message);
+		case Mc.init:
+			processInit(message);
 		break;
 
 		case Mc.finish:
@@ -139,8 +139,8 @@ public class ManagerPokladne extends Manager
 			}
 		break;
 
-		case Mc.init:
-			processInit(message);
+		case Mc.startObednejPrestavky:
+			processStartObednejPrestavky(message);
 		break;
 
 		default:

@@ -53,12 +53,12 @@ public class ProcesZadavaniaDoAutomatu extends Process
 	{
 		switch (message.code())
 		{
-		case Mc.start:
-			processStart(message);
-		break;
-
 		case Mc.zadavanieDoAutomatuUkoncene:
 			processZadavanieDoAutomatuUkoncene(message);
+		break;
+
+		case Mc.start:
+			processStart(message);
 		break;
 
 		default:

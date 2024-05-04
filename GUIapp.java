@@ -187,13 +187,13 @@ public class GUIapp implements ISimDelegate {
             //refresh(simulacia);
             cisloReplikacieLabel.setText(String.valueOf(sim.currentReplication()));
             priemerZakaznikovLabel.setText(String.valueOf(Math.round(sim.getPriemerPocetLudiCelkovy().mean() * 1000.0) / 1000.0));
-            double casVSyteme = Math.round(sim.getPriemerCasVObchodeCelkovy().mean() * 1000.0) / 1000.0;
-            priemerCasVSystemeLabel.setText((int)casVSyteme%60 + ":" + (int)(casVSyteme*60%60));
+            double casVSyteme = sim.getPriemerCasVObchodeCelkovy().mean();
+            priemerCasVSystemeLabel.setText(formatTime(casVSyteme));
             double casOdchodu = sim.getPriemerPoslednyOdchod().mean();
-            priemerCasOdchodLabel.setText(String.valueOf((int)casOdchodu/60 + ":" + (int)casOdchodu%60 + ":" + (int)(casOdchodu*60%60)));
+            priemerCasOdchodLabel.setText(formatTime(casOdchodu));
             //intervalSpolahlivostiLabel.setText(String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0]*60%60)) + ";" + String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1]*60%60)));
             double casCakaniaVRade = sim.getPriemerCakanieVRadePredAutomatomCalkovy().mean();
-            casCakaniaPredAutomatomLabel.setText((int)casCakaniaVRade + ":" + (int)(casCakaniaVRade*60%60));
+            casCakaniaPredAutomatomLabel.setText(formatTime(casCakaniaVRade));
             priemerDlzkaFrontuPredAutomatomLabel.setText(String.valueOf(Math.round(sim.getPriemerDlzkaRaduAutomatCelkove().mean() * 1000.0) / 1000.0));
             vytazeneiAutomatuLabel.setText(Math.round(sim.getPriemerVytazenieAutomatuCelkove().mean()*100* 1000.0) / 1000.0 + "%");
             ArrayList<String> vytazenieObsluznych = new ArrayList<>();
@@ -208,7 +208,7 @@ public class GUIapp implements ISimDelegate {
             vytazenieObsluznychLabel.setText(vytazenieObsluznych.toString());
             ArrayList<String> vytazeniePokladni = new ArrayList<>();
             ArrayList<String> dlzkyRadovPriPokladniach = new ArrayList<>();
-            for (int i = 0; i < pocetPokladni; i++) {
+            for (int i = 0; i < sim.agentPokladne().getPokladne().length; i++) {
                 vytazeniePokladni.add(Math.round(sim.getPriemerVytazenostPokladniCelkove().get(i).mean()*100) + "%");
                 dlzkyRadovPriPokladniach.add(String.valueOf(Math.round(sim.getPriemerDlzkaRadovPriPokladniachCelkove().get(i).mean()*1000.0)/1000.0));
             }

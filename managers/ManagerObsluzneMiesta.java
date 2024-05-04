@@ -188,6 +188,11 @@ public class ManagerObsluzneMiesta extends Manager
 	}
 
 
+	//meta! sender="AgentPredajna", id="154", type="Notice"
+	public void processInit(MessageForm message)
+	{
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -198,17 +203,9 @@ public class ManagerObsluzneMiesta extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.spatnePrevzatie:
-			processSpatnePrevzatie(message);
-		break;
-
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.procesObsluhy:
-				processFinishProcesObsluhy(message);
-			break;
-
 			case Id.planovacPrestavkaObsluzne:
 				processFinishPlanovacPrestavkaObsluzne(message);
 			break;
@@ -216,11 +213,23 @@ public class ManagerObsluzneMiesta extends Manager
 			case Id.spatnePrevzatie:
 				processFinishSpatnePrevzatie(message);
 			break;
+
+			case Id.procesObsluhy:
+				processFinishProcesObsluhy(message);
+			break;
 			}
 		break;
 
 		case Mc.obsluhaZakaznika:
 			processObsluhaZakaznika(message);
+		break;
+
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:

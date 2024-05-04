@@ -42,6 +42,7 @@ public class ManagerOkolia extends Manager
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
 		message.setAddressee(((MySimulation)mySim()).agentModelu());
 		message.setCode(Mc.prichodZakaznika);
+		myAgent().incPocetZakaznikov();
 		notice(message);
 	}
 
@@ -50,7 +51,8 @@ public class ManagerOkolia extends Manager
 	{
 		//nic
 		myAgent().getPriemerCasVObchode().addSample(mySim().currentTime() - ((MyMessage)message).getZakaznik().getCasPrichodu());
-		myAgent().incPocetZakaznikov();
+		myAgent().incPocetObsluzenychZakaznikov();
+		myAgent().setCasOdchoduPosledneho(mySim().currentTime());
 	}
 
 	//meta! userInfo="Process messages defined in code", id="0"
@@ -76,6 +78,10 @@ public class ManagerOkolia extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.init:
+			processInit(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -91,10 +97,6 @@ public class ManagerOkolia extends Manager
 
 		case Mc.odchodZakaznika:
 			processOdchodZakaznika(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
 		break;
 
 		default:
