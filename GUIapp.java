@@ -101,6 +101,10 @@ public class GUIapp implements ISimDelegate {
                     if (prestavkaCheckbox.isSelected()) {
                         Config.budePrestavka = true;
                     }
+                    if (porovananieCheckbox.isSelected()) {
+                        GUIPorovnanie porovanie = new GUIPorovnanie(pocetObsluznychMiest, Config.pocetReplikacii);
+                        porovanie.startSimulation();
+                    }
                     //startSimulation();
                     double speedMax = 20 * .1;
                     double speedValue = 10 * .1;
@@ -111,6 +115,7 @@ public class GUIapp implements ISimDelegate {
                     stopButton.setEnabled(true);
                     porovananieCheckbox.setEnabled(false);
                     prestavkaCheckbox.setEnabled(false);
+
                 }
                 catch (NumberFormatException i) {
                     //Nebolo zadane cislo
@@ -296,10 +301,6 @@ public class GUIapp implements ISimDelegate {
         for (int i = 0; i < simulacia.getPocetNormalObsluznych(); i++) {
             odberModel.addRow(new Object[]{i+ simulacia.getPocetOnlineObsluznych(), "NORMALNE", simulacia.agentObsluzneMiesta().getNormalneObsluzne()[i], 0.0});
         }
-        if (porovananieCheckbox.isSelected()) {
-            GUIPorovnanie porovanie = new GUIPorovnanie(8, 20000);
-            porovanie.startSimulation();
-        }
     }
 
     public static void main(String[] args) {
@@ -341,7 +342,7 @@ public class GUIapp implements ISimDelegate {
             pocetOstatnychZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOsobyQueue().size()));
             obsadenyAutomatLabel.setText(String.valueOf(!sim.agentAutomat().isAutomatIsEmpty()));
 
-            vytazenostAutomatuLabel.setText(Math.round(sim.agentAutomat().getPriemerVytazenieAutomatu().sampleSize()) + "%");
+            vytazenostAutomatuLabel.setText(Math.round((sim.agentAutomat().getPriemerVytazenieAutomatu().sum()/simulacnyCas) *100) + "%");
         }
     });
     }

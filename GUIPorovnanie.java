@@ -47,7 +47,6 @@ private ArrayList<List<Double>> yValues;
         //chart.getStyler().setXAxisTickMarkSpacingHint(1000);
         chartPanel.revalidate();
         chartPanel.repaint();
-        startSimulation();
     }
 
     public void startSimulation() {

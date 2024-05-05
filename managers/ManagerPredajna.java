@@ -35,9 +35,6 @@ public class ManagerPredajna extends Manager
 		message.setAddressee(myAgent().mySim().findAgent(Id.agentObsluzneMiesta));
 		message.setSender(myAgent());
 		message.setCode(Mc.obsluhaZakaznika);
-		if (message.stack().isEmpty()) {
-			System.out.println("Chyba");
-		}
 		request(message);
 	}
 
@@ -57,9 +54,6 @@ public class ManagerPredajna extends Manager
 		message.setAddressee(myAgent().mySim().findAgent(Id.agentAutomat));
 		message.setSender(myAgent());
 		message.setCode(Mc.zadavanieDoAutomatu);
-		if (message.stack().isEmpty()) {
-			System.out.println("Chyba");
-		}
 		request(message);
 	}
 
@@ -75,9 +69,6 @@ public class ManagerPredajna extends Manager
 		message.setAddressee(myAgent().mySim().findAgent(Id.agentPokladne));
 		message.setSender(myAgent());
 		message.setCode(Mc.platenieUPokoladne);
-		if (message.stack().isEmpty()) {
-			System.out.println("Chyba");
-		}
 		request(message);
 	}
 
@@ -136,9 +127,30 @@ public class ManagerPredajna extends Manager
 	//meta! sender="AgentModelu", id="160", type="Notice"
 	public void processInit(MessageForm message)
 	{
+		/*
 		MyMessage initAutomat = new MyMessage((MyMessage) message);
 		initAutomat.setAddressee(myAgent().findAssistant(Id.planovacPrichodov));
 		startContinualAssistant(initAutomat);
+
+		 */
+	}
+
+	//meta! sender="AgentPokladne", id="177", type="Notice"
+	public void processNavratZPokladne(MessageForm message)
+	{
+
+		MyMessage msg = new MyMessage((MyMessage) message);
+		msg.setAddressee(mySim().findAgent(Id.agentObsluzneMiesta));
+		notice(msg);
+	}
+
+	//meta! sender="AgentObsluzneMiesta", id="171", type="Notice"
+	public void processPrichodZObsluzneho(MessageForm message)
+	{
+
+		MyMessage msg = new MyMessage((MyMessage) message);
+		msg.setAddressee(mySim().findAgent(Id.agentPokladne));
+		notice(msg);
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -157,6 +169,14 @@ public class ManagerPredajna extends Manager
 
 		case Mc.uvolnenieObsluzneho:
 			processUvolnenieObsluzneho(message);
+		break;
+
+		case Mc.prichodZObsluzneho:
+			processPrichodZObsluzneho(message);
+		break;
+
+		case Mc.navratZPokladne:
+			processNavratZPokladne(message);
 		break;
 
 		case Mc.endObednejPrestavky:

@@ -70,6 +70,7 @@ public class AgentPokladne extends Agent
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.platenieHotove);
 		addOwnMessage(Mc.startObednejPrestavky);
+		addOwnMessage(Mc.prichodZObsluzneho);
 		addOwnMessage(Mc.ukonciZablokovanie);
 		addOwnMessage(Mc.zablokujPokladne);
 		addOwnMessage(Mc.platenieUPokoladne);

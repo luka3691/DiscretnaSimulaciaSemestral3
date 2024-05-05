@@ -28,6 +28,8 @@ public class AgentObsluzneMiesta extends Agent
 	private Queue<Osoba> onlineQueue;
 	private boolean[] normalneObsluzne;
 	private boolean[] onlineObsluzne;
+	private boolean jeZablokovane;
+	private boolean jePrec;
 
 	public AgentObsluzneMiesta(int id, Simulation mySim, Agent parent)
 	{
@@ -64,6 +66,8 @@ public class AgentObsluzneMiesta extends Agent
 		sprava.setAddressee(this);
 		sprava.setCode(Mc.init);
 		manager().notice(sprava);
+		jePrec = false;
+		jeZablokovane = false;
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -78,7 +82,10 @@ public class AgentObsluzneMiesta extends Agent
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.obsluhaZakaznika);
 		addOwnMessage(Mc.spatnePrevzatieHotove);
+		addOwnMessage(Mc.zablokujObsluzne);
 		addOwnMessage(Mc.spatnePrevzatie);
+		addOwnMessage(Mc.navratZPokladne);
+		addOwnMessage(Mc.ukonciZablokovanie);
 		addOwnMessage(Mc.obsluhaHotova);
 	}
 	//meta! tag="end"
@@ -121,5 +128,21 @@ public class AgentObsluzneMiesta extends Agent
 		} else {
 			osobyQueue.add(osoba);
 		}
+	}
+
+	public boolean isJeZablokovane() {
+		return jeZablokovane;
+	}
+
+	public void setJeZablokovane(boolean jeZablokovane) {
+		this.jeZablokovane = jeZablokovane;
+	}
+
+	public boolean isJePrec() {
+		return jePrec;
+	}
+
+	public void setJePrec(boolean jePrec) {
+		this.jePrec = jePrec;
 	}
 }

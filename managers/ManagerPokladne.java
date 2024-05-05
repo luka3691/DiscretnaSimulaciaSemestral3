@@ -38,6 +38,9 @@ public class ManagerPokladne extends Manager
 		if (Config.budePrestavka) {
 			MyMessage msg = new MyMessage((MyMessage) message);
 			msg.setAddressee((myAgent()).findAssistant(Id.planovacPrestavkaPokladne));
+			msg.stack().add(mySim().findAgent(Id.agentModelu));
+			msg.stack().add(mySim().findAgent(Id.agentPredajna));
+			msg.stack().add(myAgent());
 			startContinualAssistant(msg);
 		}
 
@@ -63,6 +66,7 @@ public class ManagerPokladne extends Manager
 	//meta! sender="ProcesPlatenia", id="37", type="Finish"
 	public void processFinishProcesPlatenia(MessageForm message)
 	{
+
 		if (myAgent().isZablokovane()) {
 			obedovaPrestvakaZapnuta(message);
 		} else {
@@ -73,6 +77,7 @@ public class ManagerPokladne extends Manager
 	//meta! sender="AgentPredajna", id="49", type="Request"
 	public void processPlatenieUPokoladne(MessageForm message)
 	{
+
 		MyMessage sprava = new MyMessage((MyMessage) message);
 		if (myAgent().isZablokovane()) {
 			zaradPriZablokovani(sprava);
@@ -96,7 +101,6 @@ public class ManagerPokladne extends Manager
 	public void processZablokujPokladne(MessageForm message)
 	{
 		myAgent().setZablokovane(true);
-		myAgent().getPokladne()[0] = false;
 		for (int i = 1; i < myAgent().getPokladne().length; i++) {
 			myAgent().getPokladne()[i] = false;
 			myAgent().getRady()[0].addAll(myAgent().getRady()[i]);
@@ -104,6 +108,29 @@ public class ManagerPokladne extends Manager
 		}
 		for (Osoba osoba : myAgent().getRady()[0]) {
 		osoba.setIdPokladne(0);
+		}
+
+	}
+
+	//meta! sender="AgentPredajna", id="172", type="Notice"
+	public void processPrichodZObsluzneho(MessageForm message)
+	{
+		myAgent().setPrisielZObsluzneho(true);
+		if (message.stack().isEmpty()) {
+			message.stack().add(mySim().findAgent(Id.agentPredajna));
+			message.stack().add(mySim().findAgent(Id.agentModelu));
+		}
+		if (!myAgent().getRady()[0].isEmpty()) {
+			MyMessage spravaCopy = new MyMessage((MyMessage) message);
+			Osoba osobaNova = myAgent().getRady()[0].poll();
+			spravaCopy.setCisloPokladne(0);
+			spravaCopy.setZakaznik(osobaNova);
+			myAgent().getPokladne()[0] = false;
+			spravaCopy.setCode(Mc.platenieUPokoladne);
+			spravaCopy.setAddressee(myAgent().findAssistant(Id.procesPlatenia));
+			startContinualAssistant(spravaCopy);
+			//statistiky
+			myAgent().getPriemerDlzkaRadovPriPokladniach().get(0).addSample(myAgent().getRady()[0].size());
 		}
 	}
 
@@ -117,6 +144,10 @@ public class ManagerPokladne extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.prichodZObsluzneho:
+			processPrichodZObsluzneho(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -163,8 +194,10 @@ public class ManagerPokladne extends Manager
 	{ return ((AgentPokladne)myAgent()).f; }
 
 	 */
-	private void zaradPriZablokovani(MyMessage sprava)
+	private void zaradPriZablokovani(MyMessage message)
 	{
+
+		MyMessage sprava = new MyMessage((MyMessage) message);
 		int idRaduNaZaradenie = 0;
 		sprava.getZakaznik().setIdPokladne(idRaduNaZaradenie);
 		sprava.setCisloPokladne(idRaduNaZaradenie);
@@ -180,8 +213,9 @@ public class ManagerPokladne extends Manager
 		}
 	}
 
-	private void zaradNormalne(MyMessage sprava)
+	private void zaradNormalne(MyMessage message)
 	{
+		MyMessage sprava = new MyMessage((MyMessage) message);
 		sprava.setAddressee(myAgent().findAssistant(Id.dotazNaZaradneieDoPokladne));
 		execute(sprava);
 		int idPokladneNaZaradenie = sprava.getCisloPokladne();
@@ -205,7 +239,7 @@ public class ManagerPokladne extends Manager
 	{
 		MyMessage sprava = new MyMessage((MyMessage) message);
 		AgentPokladne pokladne = (AgentPokladne)myAgent();
-		int idPokladne = sprava.getCisloPokladne();
+		int idPokladne = sprava.getZakaznik().getIdPokladne();
 		//ak si nechal tovar na vydajni musi si pre neho ist
 		//ak nie je prazdny rad pred danou pokladnou tak naplanuj zaciatok platenia
 		if (!pokladne.getRady()[idPokladne].isEmpty()) {
@@ -221,6 +255,14 @@ public class ManagerPokladne extends Manager
 		} else {
 			pokladne.getPokladne()[idPokladne] = true;
 		}
+		if (sprava.getZakaznik().getIdPokladne() == 0 && myAgent().isPrisielZObsluzneho()) {
+			myAgent().setPrisielZObsluzneho(false);
+			MyMessage odoslanieZPokladne = new MyMessage((MyMessage) message);
+			odoslanieZPokladne.setAddressee(mySim().findAgent(Id.agentPredajna));
+			odoslanieZPokladne.setCode(Mc.navratZPokladne);
+			notice(odoslanieZPokladne);
+		}
+
 		((MyMessage) message).getZakaznik().setStav(StavyOsoby.ODCHADZA);
 		message.setCode(Mc.spatnePrevzatie);
 		response(message);
@@ -229,30 +271,28 @@ public class ManagerPokladne extends Manager
 	private void obedovaPrestvakaZapnuta(MessageForm message)
 	{
 		int idPokladne = 0;
-		if (myAgent().isZablokovane() && ((MyMessage)message).getCisloPokladne() == idPokladne) {
-			MyMessage sprava = new MyMessage((MyMessage) message);
-			AgentPokladne pokladne = (AgentPokladne)myAgent();
-			if (myAgent().isPrisielZObsluzneho()) {
-				pokladne.getPokladne()[idPokladne] = true;
-			}
-			//ak si nechal tovar na vydajni musi si pre neho ist
-			//ak nie je prazdny rad pred danou pokladnou tak naplanuj zaciatok platenia
-			if ((!pokladne.getRady()[idPokladne].isEmpty() && myAgent().isPrisielZObsluzneho())) {
-				MyMessage spravaCopy = new MyMessage((MyMessage) message);
-				Osoba osobaNova = pokladne.getRady()[idPokladne].poll();
-				spravaCopy.setZakaznik(osobaNova);
-				pokladne.getPokladne()[idPokladne] = false;
-				spravaCopy.setCode(Mc.platenieUPokoladne);
-				//spravaCopy.setAddressee(proces());
-				startContinualAssistant(spravaCopy);
-				//statistiky
-				myAgent().getPriemerDlzkaRadovPriPokladniach().get(idPokladne).addSample(myAgent().getRady()[idPokladne].size());
-			}
-
+		AgentPokladne pokladne = (AgentPokladne)myAgent();
+		if (myAgent().isPrisielZObsluzneho()) {
+			pokladne.getPokladne()[idPokladne] = true;
 		}
-		((MyMessage) message).getZakaznik().setStav(StavyOsoby.ODCHADZA);
-		message.setCode(Mc.spatnePrevzatie);
-		response(message);
-		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
+		//ak si nechal tovar na vydajni musi si pre neho ist
+		//ak nie je prazdny rad pred danou pokladnou tak naplanuj zaciatok platenia
+		if ((!pokladne.getRady()[idPokladne].isEmpty() && myAgent().isPrisielZObsluzneho())) {
+			MyMessage spravaCopy = new MyMessage((MyMessage) message);
+			Osoba osobaNova = pokladne.getRady()[idPokladne].poll();
+			spravaCopy.setZakaznik(osobaNova);
+			pokladne.getPokladne()[idPokladne] = false;
+			spravaCopy.setCode(Mc.platenieUPokoladne);
+			spravaCopy.setAddressee(myAgent().findAssistant(Id.procesPlatenia));
+			startContinualAssistant(spravaCopy);
+			//statistiky
+			myAgent().getPriemerDlzkaRadovPriPokladniach().get(idPokladne).addSample(myAgent().getRady()[idPokladne].size());
+		}
+		MyMessage sprava = new MyMessage((MyMessage) message);
+		sprava.getZakaznik().setStav(StavyOsoby.ODCHADZA);
+		sprava.setCode(Mc.spatnePrevzatie);
+		response(sprava);
+
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) sprava).getZakaznik().toArray());
 	}
 }
