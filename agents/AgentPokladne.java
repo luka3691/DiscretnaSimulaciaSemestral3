@@ -53,22 +53,26 @@ public class AgentPokladne extends Agent
 		}
 		zablokovane = false;
 		prisielZObsluzneho = false;
+		MyMessage sprava = new MyMessage(mySim());
+		sprava.setAddressee(this);
+		sprava.setCode(Mc.init);
+		manager().notice(sprava);
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	private void init()
 	{
 		new ManagerPokladne(Id.managerPokladne, mySim(), this);
-		new ProcesPlatenia(Id.procesPlatenia, mySim(), this);
 		new PlanovacPrestavkaPokladne(Id.planovacPrestavkaPokladne, mySim(), this);
 		new DotazNaZaradenieDoRaduPriPokladniach(Id.dotazNaZaradenieDoRaduPriPokladniach, mySim(), this);
+		new ProcesPlatenia(Id.procesPlatenia, mySim(), this);
 		new DotazNaZaradneieDoPokladne(Id.dotazNaZaradneieDoPokladne, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.platenieHotove);
 		addOwnMessage(Mc.startObednejPrestavky);
 		addOwnMessage(Mc.ukonciZablokovanie);
-		addOwnMessage(Mc.platenieUPokoladne);
 		addOwnMessage(Mc.zablokujPokladne);
+		addOwnMessage(Mc.platenieUPokoladne);
 	}
 	//meta! tag="end"
 

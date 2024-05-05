@@ -78,21 +78,21 @@ public class ManagerOkolia extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.init:
-			processInit(message);
-		break;
-
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.zatvaraniePredajneOkolie:
-				processFinishZatvaraniePredajneOkolie(message);
-			break;
-
 			case Id.planovacPrichodov:
 				processFinishPlanovacPrichodov(message);
 			break;
+
+			case Id.zatvaraniePredajneOkolie:
+				processFinishZatvaraniePredajneOkolie(message);
+			break;
 			}
+		break;
+
+		case Mc.init:
+			processInit(message);
 		break;
 
 		case Mc.odchodZakaznika:

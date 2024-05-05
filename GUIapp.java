@@ -3,9 +3,7 @@
 import OSPABA.ISimDelegate;
 import OSPABA.SimState;
 import OSPABA.Simulation;
-import agents.AgentAutomat;
 import simulation.Config;
-import simulation.Id;
 import simulation.MySimulation;
 
 import javax.swing.*;
@@ -68,6 +66,7 @@ public class GUIapp implements ISimDelegate {
     private JLabel dlzkyRadovPredObsluznymiLabel;
     private JLabel priemerObsluzenychLabel;
     private JLabel vytazenostAutomatuLabel;
+    private JCheckBox prestavkaCheckbox;
 
     int pocetPokladni;
     int pocetObsluz ;
@@ -99,6 +98,9 @@ public class GUIapp implements ISimDelegate {
                     int pocetObsluznychMiest = Integer.parseInt(pocetObsluzField.getText());
                     initSimulation(pocetPokladni, pocetObsluznychMiest);
                     simulacia.simulateAsync(Config.pocetReplikacii, Config.trvanieReplikacie);
+                    if (prestavkaCheckbox.isSelected()) {
+                        Config.budePrestavka = true;
+                    }
                     //startSimulation();
                     double speedMax = 20 * .1;
                     double speedValue = 10 * .1;
@@ -107,6 +109,8 @@ public class GUIapp implements ISimDelegate {
                     štartButton.setEnabled(false);
                     pauzaButton.setEnabled(true);
                     stopButton.setEnabled(true);
+                    porovananieCheckbox.setEnabled(false);
+                    prestavkaCheckbox.setEnabled(false);
                 }
                 catch (NumberFormatException i) {
                     //Nebolo zadane cislo
@@ -134,7 +138,7 @@ public class GUIapp implements ISimDelegate {
                 pauzaButton.setEnabled(false);
                 stopButton.setEnabled(false);
                 isStopped.set(true);
-
+                prestavkaCheckbox.setEnabled(true);
             }
         });
 

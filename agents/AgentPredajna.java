@@ -20,6 +20,10 @@ public class AgentPredajna extends Agent
 	{
 		super.prepareReplication();
 		// Setup component for the next replication
+		MyMessage sprava = new MyMessage(mySim());
+		sprava.setAddressee(this);
+		sprava.setCode(Mc.init);
+		manager().notice(sprava);
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"

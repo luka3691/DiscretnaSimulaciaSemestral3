@@ -38,6 +38,10 @@ public class PlanovacPrestavkaPokladne extends Scheduler
 	//meta! sender="AgentPokladne", id="162", type="Notice"
 	public void processZablokujPokladne(MessageForm message)
 	{
+		MyMessage odoslanie = new MyMessage((MyMessage) message);
+		odoslanie.setCode(Mc.zablokujPokladne);
+		odoslanie.setAddressee(this.myAgent());
+		notice(odoslanie);
 		MyMessage msg = new MyMessage((MyMessage) message);
 		msg.setCode(Mc.ukonciZablokovanie);
 		hold(Config.trvaniePrestavky, msg);
@@ -55,16 +59,16 @@ public class PlanovacPrestavkaPokladne extends Scheduler
 	{
 		switch (message.code())
 		{
+		case Mc.zablokujPokladne:
+			processZablokujPokladne(message);
+		break;
+
 		case Mc.ukonciZablokovanie:
 			processUkonciZablokovanie(message);
 		break;
 
 		case Mc.start:
 			processStart(message);
-		break;
-
-		case Mc.zablokujPokladne:
-			processZablokujPokladne(message);
 		break;
 
 		default:

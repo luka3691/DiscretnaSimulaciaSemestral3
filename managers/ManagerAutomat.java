@@ -133,25 +133,25 @@ public class ManagerAutomat extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.uvolnenieAutomatu:
-			processUvolnenieAutomatu(message);
-		break;
-
 		case Mc.finish:
 			switch (message.sender().id())
 			{
-			case Id.zatvaraniePredajneAutomat:
-				processFinishZatvaraniePredajneAutomat(message);
-			break;
-
 			case Id.procesZadavaniaDoAutomatu:
 				processFinishProcesZadavaniaDoAutomatu(message);
+			break;
+
+			case Id.zatvaraniePredajneAutomat:
+				processFinishZatvaraniePredajneAutomat(message);
 			break;
 			}
 		break;
 
 		case Mc.init:
 			processInit(message);
+		break;
+
+		case Mc.uvolnenieAutomatu:
+			processUvolnenieAutomatu(message);
 		break;
 
 		case Mc.zadavanieDoAutomatu:

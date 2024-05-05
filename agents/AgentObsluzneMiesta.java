@@ -60,16 +60,20 @@ public class AgentObsluzneMiesta extends Agent
 		}
 		osobyQueue = new PriorityQueue<>(new OsobaComparatorPriority());
 		onlineQueue = new PriorityQueue<>(new OsobaComparatorNoPriority());
+		MyMessage sprava = new MyMessage(mySim());
+		sprava.setAddressee(this);
+		sprava.setCode(Mc.init);
+		manager().notice(sprava);
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	private void init()
 	{
 		new ManagerObsluzneMiesta(Id.managerObsluzneMiesta, mySim(), this);
-		new SpatnePrevzatie(Id.spatnePrevzatie, mySim(), this);
-		new PlanovacPrestavkaObsluzne(Id.planovacPrestavkaObsluzne, mySim(), this);
 		new DotazZmestiSaDoObsluznych(Id.dotazZmestiSaDoObsluznych, mySim(), this);
 		new DotazZaradNaObsluzne(Id.dotazZaradNaObsluzne, mySim(), this);
+		new SpatnePrevzatie(Id.spatnePrevzatie, mySim(), this);
+		new PlanovacPrestavkaObsluzne(Id.planovacPrestavkaObsluzne, mySim(), this);
 		new ProcesObsluhy(Id.procesObsluhy, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.obsluhaZakaznika);

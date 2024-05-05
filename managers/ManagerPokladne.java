@@ -35,6 +35,12 @@ public class ManagerPokladne extends Manager
 	//meta! sender="AgentPredajna", id="58", type="Notice"
 	public void processInit(MessageForm message)
 	{
+		if (Config.budePrestavka) {
+			MyMessage msg = new MyMessage((MyMessage) message);
+			msg.setAddressee((myAgent()).findAssistant(Id.planovacPrestavkaPokladne));
+			startContinualAssistant(msg);
+		}
+
 	}
 
 	//meta! sender="AgentPredajna", id="24", type="Notice"
@@ -57,7 +63,7 @@ public class ManagerPokladne extends Manager
 	//meta! sender="ProcesPlatenia", id="37", type="Finish"
 	public void processFinishProcesPlatenia(MessageForm message)
 	{
-		if (Config.budePrestavka) {
+		if (myAgent().isZablokovane()) {
 			obedovaPrestvakaZapnuta(message);
 		} else {
 			ziadnaObedovaPrestvaka(message);
@@ -96,6 +102,9 @@ public class ManagerPokladne extends Manager
 			myAgent().getRady()[0].addAll(myAgent().getRady()[i]);
 			myAgent().getRady()[i].clear();
 		}
+		for (Osoba osoba : myAgent().getRady()[0]) {
+		osoba.setIdPokladne(0);
+		}
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -108,10 +117,6 @@ public class ManagerPokladne extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.platenieUPokoladne:
-			processPlatenieUPokoladne(message);
-		break;
-
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -129,12 +134,16 @@ public class ManagerPokladne extends Manager
 			processZablokujPokladne(message);
 		break;
 
-		case Mc.init:
-			processInit(message);
+		case Mc.platenieUPokoladne:
+			processPlatenieUPokoladne(message);
 		break;
 
 		case Mc.startObednejPrestavky:
 			processStartObednejPrestavky(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:
@@ -219,26 +228,27 @@ public class ManagerPokladne extends Manager
 	}
 	private void obedovaPrestvakaZapnuta(MessageForm message)
 	{
-		MyMessage sprava = new MyMessage((MyMessage) message);
-		AgentPokladne pokladne = (AgentPokladne)myAgent();
-		int idPokladne = sprava.getCisloPokladne();
-		if ((idPokladne != 0 && myAgent().isZablokovane()) || (idPokladne == 0 && myAgent().isZablokovane() && !myAgent().isPrisielZObsluzneho())) {
-			pokladne.getPokladne()[idPokladne] = false;
-		} else {
-			pokladne.getPokladne()[idPokladne] = true;
-		}
-		//ak si nechal tovar na vydajni musi si pre neho ist
-		//ak nie je prazdny rad pred danou pokladnou tak naplanuj zaciatok platenia
-		if ((!pokladne.getRady()[idPokladne].isEmpty() && idPokladne == 0 && myAgent().isZablokovane() && myAgent().isPrisielZObsluzneho()) || (!pokladne.getRady()[idPokladne].isEmpty() && !myAgent().isZablokovane())) {
-			MyMessage spravaCopy = new MyMessage((MyMessage) message);
-			Osoba osobaNova = pokladne.getRady()[idPokladne].poll();
-			spravaCopy.setZakaznik(osobaNova);
-			pokladne.getPokladne()[idPokladne] = false;
-			spravaCopy.setCode(Mc.platenieUPokoladne);
-			//spravaCopy.setAddressee(proces());
-			startContinualAssistant(spravaCopy);
-			//statistiky
-			myAgent().getPriemerDlzkaRadovPriPokladniach().get(idPokladne).addSample(myAgent().getRady()[idPokladne].size());
+		int idPokladne = 0;
+		if (myAgent().isZablokovane() && ((MyMessage)message).getCisloPokladne() == idPokladne) {
+			MyMessage sprava = new MyMessage((MyMessage) message);
+			AgentPokladne pokladne = (AgentPokladne)myAgent();
+			if (myAgent().isPrisielZObsluzneho()) {
+				pokladne.getPokladne()[idPokladne] = true;
+			}
+			//ak si nechal tovar na vydajni musi si pre neho ist
+			//ak nie je prazdny rad pred danou pokladnou tak naplanuj zaciatok platenia
+			if ((!pokladne.getRady()[idPokladne].isEmpty() && myAgent().isPrisielZObsluzneho())) {
+				MyMessage spravaCopy = new MyMessage((MyMessage) message);
+				Osoba osobaNova = pokladne.getRady()[idPokladne].poll();
+				spravaCopy.setZakaznik(osobaNova);
+				pokladne.getPokladne()[idPokladne] = false;
+				spravaCopy.setCode(Mc.platenieUPokoladne);
+				//spravaCopy.setAddressee(proces());
+				startContinualAssistant(spravaCopy);
+				//statistiky
+				myAgent().getPriemerDlzkaRadovPriPokladniach().get(idPokladne).addSample(myAgent().getRady()[idPokladne].size());
+			}
+
 		}
 		((MyMessage) message).getZakaznik().setStav(StavyOsoby.ODCHADZA);
 		message.setCode(Mc.spatnePrevzatie);

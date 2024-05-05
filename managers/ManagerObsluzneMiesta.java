@@ -33,11 +33,6 @@ public class ManagerObsluzneMiesta extends Manager
 		}
 	}
 
-	//meta! userInfo="Removed from model"
-	public void processUvolneniePredajne(MessageForm message)
-	{
-	}
-
 	//meta! sender="AgentPredajna", id="46", type="Request"
 	public void processObsluhaZakaznika(MessageForm message)
 	{
@@ -70,10 +65,6 @@ public class ManagerObsluzneMiesta extends Manager
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
-	//meta! userInfo="Removed from model"
-	public void processStartObednejPrestavky(MessageForm message)
-	{
-	}
 
 	//meta! sender="ProcesObsluhy", id="34", type="Finish"
 	public void processFinishProcesObsluhy(MessageForm message)
@@ -184,6 +175,17 @@ public class ManagerObsluzneMiesta extends Manager
 	}
 
 
+	//meta! sender="AgentPredajna", id="154", type="Notice"
+	public void processInit(MessageForm message)
+	{
+		if (Config.budePrestavka) {
+			MyMessage msg = new MyMessage((MyMessage) message);
+			msg.setAddressee((myAgent()).findAssistant(Id.planovacPrestavkaObsluzne));
+			startContinualAssistant(msg);
+		}
+
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -194,10 +196,6 @@ public class ManagerObsluzneMiesta extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.spatnePrevzatie:
-			processSpatnePrevzatie(message);
-		break;
-
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -217,6 +215,14 @@ public class ManagerObsluzneMiesta extends Manager
 
 		case Mc.obsluhaZakaznika:
 			processObsluhaZakaznika(message);
+		break;
+
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:
