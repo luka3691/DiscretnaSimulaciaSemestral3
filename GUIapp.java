@@ -67,6 +67,15 @@ public class GUIapp implements ISimDelegate {
     private JLabel priemerObsluzenychLabel;
     private JLabel vytazenostAutomatuLabel;
     private JCheckBox prestavkaCheckbox;
+    private JLabel priemerZakaznikovIntervalLabel;
+    private JLabel priemerCasOdchodIntervalLabel;
+    private JLabel casCakaniaPredAutomatomIntervalLabel;
+    private JLabel vytazeneiAutomatuIntervalLabel;
+    private JLabel vytazeniePokladniIntervalLabel;
+    private JLabel priemerDlzkaFrontuPredAutomatomIntervalLabel;
+    private JLabel vytazenieObsluznychIntervalLabel;
+    private JLabel dlzkyRadovPriPokladniachIntervalLabel;
+    private JLabel priemerObsluzenychIntervalLabel;
 
     int pocetPokladni;
     int pocetObsluz ;
@@ -205,7 +214,6 @@ public class GUIapp implements ISimDelegate {
             priemerCasVSystemeLabel.setText(formatTime(casVSyteme));
             double casOdchodu = sim.getPriemerPoslednyOdchod().mean() + 9 * 60 * 60;
             priemerCasOdchodLabel.setText(formatTime(casOdchodu));
-            //intervalSpolahlivostiLabel.setText(String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0]*60%60)) + ";" + String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1]*60%60)));
             double casCakaniaVRade = sim.getPriemerCakanieVRadePredAutomatomCalkovy().mean();
             casCakaniaPredAutomatomLabel.setText(formatTime(casCakaniaVRade));
             priemerDlzkaFrontuPredAutomatomLabel.setText(String.valueOf(Math.round(sim.getPriemerDlzkaRaduAutomatCelkove().mean() * 1000.0) / 1000.0));
@@ -229,8 +237,14 @@ public class GUIapp implements ISimDelegate {
             vytazeniePokladniLabel.setText(vytazeniePokladni.toString());
             dlzkyRadovPriPokladniachLabel.setText(dlzkyRadovPriPokladniach.toString());
             priemerObsluzenychLabel.setText(String.valueOf(Math.round(sim.getPocetObsluzenychZakaznikovCelkove().mean()*1000.0)/1000.0));
-            dlzkyRadovPredObsluznymiLabel.setText("Normálne: " + Math.round(sim.getPriemerDlzkaRaduPredObsluzNormalCelkove().mean()*1000.0)/1000.0 + ", Online: " + Math.round(sim.getPriemerDlzkaRaduPredObsluzOnlineCelkove().mean()*1000.0)/1000.0);
-
+            if (simu.currentReplication() > 10) {
+                intervalSpolahlivostiLabel.setText(formatTime(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0]) + "." + formatTime(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1]));
+                casCakaniaPredAutomatomIntervalLabel.setText(formatTime(sim.getPriemerCakanieVRadePredAutomatomCalkovy().confidenceInterval_95()[0]) + "." + formatTime(sim.getPriemerCakanieVRadePredAutomatomCalkovy().confidenceInterval_95()[1]));
+                priemerCasOdchodIntervalLabel.setText(Math.round(sim.getPriemerPoslednyOdchod().confidenceInterval_95()[0]* 100.0)/ 100.0 + "." + Math.round(sim.getPriemerPoslednyOdchod().confidenceInterval_95()[1]* 100.0)/ 100.0 );
+                priemerZakaznikovIntervalLabel.setText(Math.round(sim.getPriemerPocetLudiCelkovy().confidenceInterval_95()[0]* 100.0)/ 100.0  + "." + Math.round(sim.getPriemerPocetLudiCelkovy().confidenceInterval_95()[1]* 100.0)/ 100.0 );
+                priemerObsluzenychIntervalLabel.setText(Math.round(sim.getPocetObsluzenychZakaznikovCelkove().confidenceInterval_95()[0]* 100.0)/ 100.0  + "." + Math.round(sim.getPocetObsluzenychZakaznikovCelkove().confidenceInterval_95()[1]* 100.0)/ 100.0 );
+                vytazeneiAutomatuIntervalLabel.setText(Math.round(sim.getPriemerVytazenieAutomatuCelkove().confidenceInterval_95()[0]* 100.0 *100.0)/100.0  + "%," + Math.round(sim.getPriemerVytazenieAutomatuCelkove().confidenceInterval_95()[1] * 100.0 * 100.0) / 100.0  + "%");
+            }
         });
 
 
