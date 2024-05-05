@@ -17,6 +17,8 @@ public class Mc extends IdList
 	public static final int uvolnenieObsluzneho = 1007;
 	public static final int startObednejPrestavky = 1010;
 	public static final int novyZakaznik = 1012;
+	public static final int zablokujPokladne = 1039;
+	public static final int ukonciZablokovanie = 1041;
 	public static final int zadavanieDoAutomatuUkoncene = 1025;
 	public static final int obsluhaHotova = 1026;
 	public static final int obsluhaZakaznika = 1013;

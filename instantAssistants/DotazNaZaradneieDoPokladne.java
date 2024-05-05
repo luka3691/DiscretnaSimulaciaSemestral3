@@ -35,7 +35,7 @@ public class DotazNaZaradneieDoPokladne extends Query
 	public int getIDPokladne() {
 		int pocetPrazdnych = 0;
 		int prazdnaPokladna = 0;
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetPokladni(); i++) {
 			if (myAgent().getPokladne()[i]) {
 				pocetPrazdnych++;
 				prazdnaPokladna = i;
@@ -51,7 +51,7 @@ public class DotazNaZaradneieDoPokladne extends Query
 	}
 	public int zaradNahodneDoPokladne() {
 		ArrayList<Integer> prazdnePokladne = new ArrayList<>();
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetPokladni(); i++) {
 			if (myAgent().getPokladne()[i]) {
 				prazdnePokladne.add(i);
 			}

@@ -9,6 +9,7 @@ import agents.*;
 import continualAssistants.*;
 import instantAssistants.*;
 
+import java.util.EventListener;
 import java.util.Queue;
 
 //meta! id="7"
@@ -41,10 +42,11 @@ public class ManagerObsluzneMiesta extends Manager
 	public void processObsluhaZakaznika(MessageForm message)
 	{
 		MyMessage sprava = new MyMessage((MyMessage) message);
-		AgentObsluzneMiesta obsluzne = (AgentObsluzneMiesta)myAgent();
 		sprava.setAddressee(myAgent().findAssistant(Id.dotazZaradNaObsluzne));
 		execute(sprava);
-		int id = sprava.getCisloObsluzneho();
+		int id = sprava.getZakaznik().getIdObsluzneho();
+		myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+		myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
 		if (id != -1) {
 			//nasla sa volna pokladna, naplanuj zaciatok obsluhy
 			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
@@ -53,25 +55,17 @@ public class ManagerObsluzneMiesta extends Manager
 				myAgent().getNormalneObsluzne()[id] = false;
 			}
 			sprava.getZakaznik().setIdObsluzneho(id);
+			sprava.setCisloObsluzneho(id);
 			sprava.getZakaznik().setStav(StavyOsoby.JE_OBSLUHOVANY);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
 			startContinualAssistant(sprava);
 		} else {
 			//zarad osobu do radu pred obsluznymi
 			myAgent().zaradDoRadu(sprava.getZakaznik());
-			/*
-			if (predajna.getObsluzneMiesta().zmestiSa(predajna.getAutomatIsEmpty())) {
-				predajna.setAutomatIsEmpty(true);
-			}
-			 */
-
-			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
-				myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
-			} else {
-				myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
-			}
 			sprava.getZakaznik().setStav(StavyOsoby.V_RADE_PRED_OSBLUHOU);
 		};
+		myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+		myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
 		odoslanieNotifikacie(sprava);
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
@@ -85,7 +79,8 @@ public class ManagerObsluzneMiesta extends Manager
 	public void processFinishProcesObsluhy(MessageForm message)
 	{
 		MyMessage sprava = new MyMessage((MyMessage) message);
-
+		myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+		myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
 		int idNavstivenehoObsluzneho = sprava.getZakaznik().getIdObsluzneho();
 		boolean[] obsluzneDanehoTypu;
 		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
@@ -93,33 +88,33 @@ public class ManagerObsluzneMiesta extends Manager
 		} else {
 			obsluzneDanehoTypu = myAgent().getNormalneObsluzne();
 		}
-		obsluzneDanehoTypu[idNavstivenehoObsluzneho] = !sprava.getZakaznik().isNechalTovarNaVydajni();
-
-		Queue<Osoba> queue;
-		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
-			queue = myAgent().getOnlineQueue();
-		} else {
-			queue = myAgent().getOsobyQueue();
-		}
-		//naplanuj novu obsluhu ak nie je rad prazdny
-		if (obsluzneDanehoTypu[idNavstivenehoObsluzneho] && !queue.isEmpty()) {
-			Osoba novaOsoba = queue.poll();
-			int id = sprava.getCisloObsluzneho();
-			novaOsoba.setIdObsluzneho(id);
-			novaOsoba.setStav(StavyOsoby.JE_OBSLUHOVANY);
-			obsluzneDanehoTypu[idNavstivenehoObsluzneho] = false;
-			sprava.setZakaznik(novaOsoba);
-			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
-			startContinualAssistant(sprava);
+		if (!sprava.getZakaznik().isNechalTovarNaVydajni()) {
+			Queue<Osoba> queue;
 			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
-				myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+				queue = myAgent().getOnlineQueue();
 			} else {
-				myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
+				queue = myAgent().getOsobyQueue();
 			}
-			odoslanieNotifikacie(message);
-		}
-		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
+			//naplanuj novu obsluhu ak nie je rad prazdny
+			if (!queue.isEmpty()) {
+				Osoba novaOsoba = queue.poll();
+				sprava.setCisloObsluzneho(idNavstivenehoObsluzneho);
+				novaOsoba.setIdObsluzneho(idNavstivenehoObsluzneho);
+				novaOsoba.setStav(StavyOsoby.JE_OBSLUHOVANY);
+				obsluzneDanehoTypu[idNavstivenehoObsluzneho] = false;
+				sprava.setZakaznik(novaOsoba);
+				sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
+				startContinualAssistant(sprava);
+				odoslanieNotifikacie(message);
+			} else {
+				obsluzneDanehoTypu[idNavstivenehoObsluzneho] = true;
+			}
 
+		}
+		myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+		myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
+
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 		message.setCode(Mc.platenieUPokoladne);
 		response(message);
 	}
@@ -157,6 +152,8 @@ public class ManagerObsluzneMiesta extends Manager
 		} else {
 			obsluzneDanehoTypu = myAgent().getNormalneObsluzne();
 		}
+		myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+		myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
 		Queue<Osoba> queue;
 		if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
 			queue = myAgent().getOnlineQueue();
@@ -164,22 +161,21 @@ public class ManagerObsluzneMiesta extends Manager
 			queue = myAgent().getOsobyQueue();
 		}
 		//naplanuj novu obsluhu ak nie je rad prazdny
-		if (obsluzneDanehoTypu[idNavstivenehoObsluzneho] && !queue.isEmpty()) {
+		if (!queue.isEmpty()) {
 			Osoba novaOsoba = queue.poll();
-			int id = sprava.getCisloObsluzneho();
-			novaOsoba.setIdObsluzneho(id);
+			novaOsoba.setIdObsluzneho(idNavstivenehoObsluzneho);
 			novaOsoba.setStav(StavyOsoby.JE_OBSLUHOVANY);
 			obsluzneDanehoTypu[idNavstivenehoObsluzneho] = false;
 			sprava.setZakaznik(novaOsoba);
 			sprava.setAddressee(myAgent().findAssistant(Id.procesObsluhy));
 			startContinualAssistant(sprava);
 			odoslanieNotifikacie(message);
-			if (sprava.getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
-				myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
-			} else {
-				myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
-			}
+
+		} else {
+			obsluzneDanehoTypu[idNavstivenehoObsluzneho] = true;
 		}
+		myAgent().getPriemerDlzkaRaduPredObsluzOnline().addSample(myAgent().getOnlineQueue().size());
+		myAgent().getPriemerDlzkaRaduPredObsluzNormal().addSample(myAgent().getOsobyQueue().size());
 		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 		((MyMessage) message).getZakaznik().setNechalTovarNaVydajni(false);
 		message.setCode(Mc.spatnePrevzatie);
@@ -187,11 +183,6 @@ public class ManagerObsluzneMiesta extends Manager
 		response(message);
 	}
 
-
-	//meta! sender="AgentPredajna", id="154", type="Notice"
-	public void processInit(MessageForm message)
-	{
-	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
@@ -203,9 +194,17 @@ public class ManagerObsluzneMiesta extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
+			case Id.procesObsluhy:
+				processFinishProcesObsluhy(message);
+			break;
+
 			case Id.planovacPrestavkaObsluzne:
 				processFinishPlanovacPrestavkaObsluzne(message);
 			break;
@@ -213,23 +212,11 @@ public class ManagerObsluzneMiesta extends Manager
 			case Id.spatnePrevzatie:
 				processFinishSpatnePrevzatie(message);
 			break;
-
-			case Id.procesObsluhy:
-				processFinishProcesObsluhy(message);
-			break;
 			}
 		break;
 
 		case Mc.obsluhaZakaznika:
 			processObsluhaZakaznika(message);
-		break;
-
-		case Mc.spatnePrevzatie:
-			processSpatnePrevzatie(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
 		break;
 
 		default:

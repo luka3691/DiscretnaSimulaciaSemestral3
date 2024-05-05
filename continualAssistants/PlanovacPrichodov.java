@@ -2,6 +2,7 @@ package continualAssistants;
 
 import OSPABA.*;
 import OSPRNG.ExponentialRNG;
+import OSPRNG.UniformContinuousRNG;
 import Osoby.Osoba;
 import Osoby.StavyOsoby;
 import simulation.*;
@@ -11,6 +12,8 @@ import agents.*;
 public class PlanovacPrichodov extends Scheduler
 {
 	private ExponentialRNG prichodLudiBezny = new ExponentialRNG((double)60*60/30);
+	private UniformContinuousRNG typZakaznikaGenerator = new UniformContinuousRNG(0.0, 1.0);
+	private UniformContinuousRNG nechaTovarNaObsluznom = new UniformContinuousRNG(0.0, 1.0);
 	//private ExponentialRNG prichodLudiBezny = new ExponentialRNG((double)60*60/15);
 	public PlanovacPrichodov(int id, Simulation mySim, CommonAgent myAgent)
 	{
@@ -41,7 +44,7 @@ public class PlanovacPrichodov extends Scheduler
 		} else {
 			System.out.println("here");
 		}
-		((MyMessage)message).setZakaznik(new Osoba(mySim()));
+		((MyMessage)message).setZakaznik(new Osoba(mySim(), typZakaznikaGenerator.sample(), nechaTovarNaObsluznom.sample()));
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
 		assistantFinished(message);
 	}

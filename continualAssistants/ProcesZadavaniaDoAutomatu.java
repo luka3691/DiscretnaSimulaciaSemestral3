@@ -1,7 +1,6 @@
 package continualAssistants;
 
 import OSPABA.*;
-import OSPRNG.TriangularRNG;
 import OSPRNG.UniformContinuousRNG;
 import simulation.*;
 import agents.*;

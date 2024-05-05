@@ -23,6 +23,9 @@ public class AgentPokladne extends Agent
 	private boolean[] pokladne;
 	private PriorityQueue<Osoba>[] rady;
 
+	private boolean zablokovane;
+	private boolean prisielZObsluzneho;
+
 	public AgentPokladne(int id, Simulation mySim, Agent parent)
 	{
 		super(id, mySim, parent);
@@ -36,18 +39,20 @@ public class AgentPokladne extends Agent
 		// Setup component for the next replication
 		priemerDlzkaRadovPriPokladniach = new ArrayList<>();
 		priemerVytazenostPokladni = new ArrayList<>();
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetPokladni(); i++) {
 			priemerVytazenostPokladni.add(new Stat());
 			priemerDlzkaRadovPriPokladniach.add(new WStat(mySim()));
 		}
-		pokladne = new boolean[Config.pocetPokladni];
-		rady = (PriorityQueue<Osoba>[]) new PriorityQueue[Config.pocetPokladni];
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		pokladne = new boolean[((MySimulation)mySim()).getPocetPokladni()];
+		rady = (PriorityQueue<Osoba>[]) new PriorityQueue[((MySimulation)mySim()).getPocetPokladni()];
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetPokladni(); i++) {
 			rady[i] = new PriorityQueue<>(new OsobaComparatorNoPriority());
 		}
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetPokladni(); i++) {
 			pokladne[i] = true;
 		}
+		zablokovane = false;
+		prisielZObsluzneho = false;
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"
@@ -61,7 +66,9 @@ public class AgentPokladne extends Agent
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.platenieHotove);
 		addOwnMessage(Mc.startObednejPrestavky);
+		addOwnMessage(Mc.ukonciZablokovanie);
 		addOwnMessage(Mc.platenieUPokoladne);
+		addOwnMessage(Mc.zablokujPokladne);
 	}
 	//meta! tag="end"
 
@@ -80,5 +87,21 @@ public class AgentPokladne extends Agent
 
 	public ArrayList<WStat> getPriemerDlzkaRadovPriPokladniach() {
 		return priemerDlzkaRadovPriPokladniach;
+	}
+
+	public boolean isZablokovane() {
+		return zablokovane;
+	}
+
+	public void setZablokovane(boolean zablokovane) {
+		this.zablokovane = zablokovane;
+	}
+
+	public boolean isPrisielZObsluzneho() {
+		return prisielZObsluzneho;
+	}
+
+	public void setPrisielZObsluzneho(boolean prisielZObsluzneho) {
+		this.prisielZObsluzneho = prisielZObsluzneho;
 	}
 }

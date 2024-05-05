@@ -75,6 +75,7 @@ public class ManagerAutomat extends Manager
 			myAgent().getPriemerDlzkaRaduAutomat().addSample(myAgent().getFrontZakaznikov().size());
 			startContinualAssistant(sprava);
 		}
+		((MySimulation)mySim()).setStavyOsob(((MyMessage) message).getZakaznik().toArray());
 	}
 
 	//meta! sender="ProcesZadavaniaDoAutomatu", id="31", type="Finish"
@@ -83,6 +84,9 @@ public class ManagerAutomat extends Manager
 		MyMessage sprava = new MyMessage((MyMessage) message);
 		AgentAutomat predajna = (AgentAutomat) myAgent();
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.KONIEC_ZADAVANIA_DO_AUTOMATU);
+		if (mySim().currentTime() >= Config.casKoncaVydavaniaListkov) {
+			predajna.getFrontZakaznikov().clear();
+		}
 		if (!predajna.getFrontZakaznikov().isEmpty() && !predajna.isJeBlokovany()) {
 			sprava.setZakaznik(predajna.getFrontZakaznikov().poll());
 			sprava.setAddressee(myAgent().findAssistant(Id.procesZadavaniaDoAutomatu));

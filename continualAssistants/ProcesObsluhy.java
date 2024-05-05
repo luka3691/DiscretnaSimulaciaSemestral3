@@ -15,16 +15,16 @@ import java.util.Arrays;
 public class ProcesObsluhy extends Process
 {
 	private UniformContinuousRNG casNaNadiktovanieObjednavky = new UniformContinuousRNG(60.0, 900.0);
-	private TriangularRNG casNaOdovzadnieOnlineTovaru = new TriangularRNG(60.0, 480.0, 120.0);
+	private TriangularRNG casNaOdovzadnieOnlineTovaru = new TriangularRNG(60.0,  120.0,480.0);
 	private UniformContinuousRNG generovanieZlozitosti = new UniformContinuousRNG(0.0, 1.0);
 	private EmpiricRNG casPripravaJednoduchej = new EmpiricRNG(
-			new EmpiricPair(new UniformContinuousRNG(2.0, 5.0), 0.6),
-			new EmpiricPair(new UniformContinuousRNG(5.0, 9.0), 0.4));
-	private UniformContinuousRNG casPripravaMierneZlozitej = new UniformContinuousRNG(9.0, 11.0);
+			new EmpiricPair(new UniformContinuousRNG(2.0*60, 5.0*60), 0.6),
+			new EmpiricPair(new UniformContinuousRNG(5.0*60, 9.0*60), 0.4));
+	private UniformContinuousRNG casPripravaMierneZlozitej = new UniformContinuousRNG(9.0*60, 11.0*60);
 	private EmpiricRNG casPripravaZlozitej = new EmpiricRNG(
-			new EmpiricPair(new UniformContinuousRNG(11.0, 12.0), 0.1),
-		new EmpiricPair(new UniformContinuousRNG(12.0, 20.0), 0.6),
-		new EmpiricPair(new UniformContinuousRNG(20.0, 25.0), 0.3));
+			new EmpiricPair(new UniformContinuousRNG(11.0*60, 12.0*60), 0.1),
+		new EmpiricPair(new UniformContinuousRNG(12.0*60, 20.0*60), 0.6),
+		new EmpiricPair(new UniformContinuousRNG(20.0*60, 25.0*60), 0.3));
 	public ProcesObsluhy(int id, Simulation mySim, CommonAgent myAgent)
 	{
 		super(id, mySim, myAgent);
@@ -43,13 +43,15 @@ public class ProcesObsluhy extends Process
 		message.setCode(Mc.obsluhaHotova);
 		double trvanieVydavaniaTovaru;
 		if (((MyMessage)message).getZakaznik().getTypZakaznika() == TypZakaznika.ONLINE) {
-			trvanieVydavaniaTovaru = getTravnieObjednavky() + casNaOdovzadnieOnlineTovaru.sample();
+			int id  = ((MyMessage) message).getZakaznik().getIdObsluzneho();
+			trvanieVydavaniaTovaru = casNaOdovzadnieOnlineTovaru.sample();
+			myAgent().getPriemerVytazenostObsluznychOnline().get(id).addSample(trvanieVydavaniaTovaru);
 			hold(trvanieVydavaniaTovaru, message);
-			myAgent().getPriemerVytazenostObsluznychOnline().get(((MyMessage) message).getZakaznik().getIdObsluzneho()).addSample(trvanieVydavaniaTovaru);
 		} else {
+			int id  = ((MyMessage) message).getZakaznik().getIdObsluzneho();
 			trvanieVydavaniaTovaru = getTravnieObjednavky() + casNaNadiktovanieObjednavky.sample();
+			myAgent().getPriemerVytazenostObsluznychOstatne().get(id).addSample(trvanieVydavaniaTovaru);
 			hold(trvanieVydavaniaTovaru, message);
-			myAgent().getPriemerVytazenostObsluznychOstatne().get(((MyMessage) message).getZakaznik().getIdObsluzneho()).addSample(trvanieVydavaniaTovaru);
 		}
 	}
 	public double getTravnieObjednavky() {
@@ -57,7 +59,7 @@ public class ProcesObsluhy extends Process
 		if (typObjednavky < 0.3) {
 			return (double) casPripravaJednoduchej.sample();
 		} else if (typObjednavky < 0.7) {
-			return casPripravaMierneZlozitej.sample();
+			return (double) casPripravaMierneZlozitej.sample();
 		} else {
 			return (double) casPripravaZlozitej.sample();
 		}

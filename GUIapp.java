@@ -81,9 +81,9 @@ public class GUIapp implements ISimDelegate {
         tableOdber.setModel(odberModel);
         tablePokladne.setModel(pokladneModel);
         tableZakaznici.setModel(zakazniciModel);
-        pocetObsluzField.setText("8");
+        pocetObsluzField.setText("13");
         pocetPokladField.setText("4");
-        pocetReplikField.setText("25000");
+        pocetReplikField.setText("20000");
         pauzaButton.setEnabled(false);
         stopButton.setEnabled(false);
         pomalyBeh = true;
@@ -95,16 +95,15 @@ public class GUIapp implements ISimDelegate {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Config.pocetReplikacii = Integer.parseInt(pocetReplikField.getText());
-                    Config.pocetPokladni = Integer.parseInt(pocetPokladField.getText());
-                    Config.pocetObsluznychMiest = Integer.parseInt(pocetObsluzField.getText());
-                    int pocetOnlineObsluznych =  Config.pocetObsluznychMiest / 3;
-                    int poceNormalnychObsluznych = Config.pocetObsluznychMiest - pocetOnlineObsluznych;
-                    Config.pocetOnlineObsluznych = pocetOnlineObsluznych;
-                    Config.pocetNormalObsluznych = poceNormalnychObsluznych;
-                    initSimulation();
-
-                    simulacia.simulate(Config.pocetReplikacii, Config.trvanieReplikacie);
+                    int pocetPokladni = Integer.parseInt(pocetPokladField.getText());
+                    int pocetObsluznychMiest = Integer.parseInt(pocetObsluzField.getText());
+                    initSimulation(pocetPokladni, pocetObsluznychMiest);
+                    simulacia.simulateAsync(Config.pocetReplikacii, Config.trvanieReplikacie);
                     //startSimulation();
+                    double speedMax = 20 * .1;
+                    double speedValue = 10 * .1;
+                    double intervalValue = rychlostSlider.getValue();
+                    simulacia.setSimSpeed(intervalValue * .01, (speedMax - speedValue + .001) * .05);
                     štartButton.setEnabled(false);
                     pauzaButton.setEnabled(true);
                     stopButton.setEnabled(true);
@@ -138,22 +137,23 @@ public class GUIapp implements ISimDelegate {
 
             }
         });
-        zrýchlenýBehRadioButton.addActionListener(new ActionListener() {
+
+        zrýchlenýBehRadioButton.addChangeListener(new ChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (zrýchlenýBehRadioButton.isSelected()) {
-                    zrychliBeh();
-                } else  {
-                    spomalBeh();
+            public void stateChanged(ChangeEvent e) {
+                if (simulacia != null)
+                {
+                    if (zrýchlenýBehRadioButton.isSelected()) {
+                        zrychliBeh();
+                    } else  {
+                        spomalBeh();
+                    }
                 }
             }
-
         });
         rychlostSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-
-
                 if (simulacia != null)
                 {
                     spomalBeh();
@@ -172,11 +172,18 @@ public class GUIapp implements ISimDelegate {
         frame.setVisible(true);
 
     }
-    public void initSimulation()
+    public void initSimulation(int pocetPokladni, int pocetObsluz)
     {
-        simulacia = new MySimulation();
+        simulacia = new MySimulation(pocetObsluz, pocetPokladni);
         simulacia.registerDelegate(this);
+        simulacia.onSimulationWillStart(sim
+                ->{ ; });
 
+        simulacia.onReplicationWillStart(sim
+                ->{
+            changeSimSpeed(simulacia);
+            startSimulation();
+        });
 
         simulacia.onReplicationDidFinish((simu)
                 ->{
@@ -187,13 +194,13 @@ public class GUIapp implements ISimDelegate {
             priemerZakaznikovLabel.setText(String.valueOf(Math.round(sim.getPriemerPocetLudiCelkovy().mean() * 1000.0) / 1000.0));
             double casVSyteme = sim.getPriemerCasVObchodeCelkovy().mean();
             priemerCasVSystemeLabel.setText(formatTime(casVSyteme));
-            double casOdchodu = sim.getPriemerPoslednyOdchod().mean();
+            double casOdchodu = sim.getPriemerPoslednyOdchod().mean() + 9 * 60 * 60;
             priemerCasOdchodLabel.setText(formatTime(casOdchodu));
             //intervalSpolahlivostiLabel.setText(String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[0]*60%60)) + ";" + String.valueOf((int)Math.floor(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1])) + ":" + String.valueOf((int)(sim.getPriemerCasVObchodeCelkovy().confidenceInterval_95()[1]*60%60)));
             double casCakaniaVRade = sim.getPriemerCakanieVRadePredAutomatomCalkovy().mean();
             casCakaniaPredAutomatomLabel.setText(formatTime(casCakaniaVRade));
             priemerDlzkaFrontuPredAutomatomLabel.setText(String.valueOf(Math.round(sim.getPriemerDlzkaRaduAutomatCelkove().mean() * 1000.0) / 1000.0));
-            vytazeneiAutomatuLabel.setText(Math.round(sim.getPriemerVytazenieAutomatuCelkove().mean()*100* 1000.0) / 1000.0 + "%");
+            vytazeneiAutomatuLabel.setText(Math.round(sim.getPriemerVytazenieAutomatuCelkove().mean()* 100.0)  + "%");
             ArrayList<String> vytazenieObsluznych = new ArrayList<>();
 
             for (int i = 0; i < sim.agentObsluzneMiesta().getOnlineObsluzne().length; i++) {
@@ -217,6 +224,27 @@ public class GUIapp implements ISimDelegate {
 
         });
 
+
+    }
+    public void changeSimSpeed(Simulation sim)
+    {
+        double speedMax = 20 * .1;
+        double speedValue = 10 * .1;
+        double intervalValue = rychlostSlider.getValue();
+
+
+
+        if (sim != null)
+        {
+            if (! zrýchlenýBehRadioButton.isSelected())
+            {
+                sim.setSimSpeed(intervalValue * .01, (speedMax - speedValue + .001) * .05);
+            }
+            else
+            {
+                sim.setMaxSimSpeed();
+            }
+        }
     }
     public static String formatTime(double time)
     {
@@ -232,14 +260,6 @@ public class GUIapp implements ISimDelegate {
         return ((int)h == 0 ? "" : df_mh.format(h) + ":")
                 + ((int)h == 0 && (int)m == 0 ? "" : df_mh.format(m) + ":")
                 + df_s.format(s);
-    }
-    private double simSpeed_duration()
-    {
-        return 0.02;
-    }
-    private double simSpeed_interval()
-    {
-        return rychlostSlider.getValue()*0.01;
     }
 
     private void zrychliBeh() {
@@ -260,33 +280,22 @@ public class GUIapp implements ISimDelegate {
     private void startSimulation() {
         isPaused.set(false);
         isStopped.set(false);
-        replikacieCounter =1000;
         pokladneModel.setRowCount(0);
         odberModel.setRowCount(0);
         zakazniciModel.setRowCount(0);
-        //int pocetReplikacii = Integer.parseInt(pocetReplikField.getText());
-        //pocetPokladni = Integer.parseInt(pocetPokladField.getText());
-        //pocetObsluz = Integer.parseInt(pocetObsluzField.getText());
-        //Predajna predajna = new Predajna(pocetReplikacii,pocetObsluz, pocetPokladni);
-        //Thread simulatcia1 = new Thread(predajna::simuluj);
-        //predajna.registerDelegate(this);
-        for (int i = 0; i < Config.pocetPokladni; i++) {
+        for (int i = 0; i < simulacia.getPocetPokladni(); i++) {
             pokladneModel.addRow(new Object[]{i, simulacia.agentPokladne().getPokladne()[i], 0 ,0.0});
         }
-        for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
+        for (int i = 0; i < simulacia.getPocetOnlineObsluznych(); i++) {
             odberModel.addRow(new Object[]{i, "ONLINE", simulacia.agentObsluzneMiesta().getOnlineObsluzne()[i], 0.0});
         }
-        for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
-            odberModel.addRow(new Object[]{i+ Config.pocetOnlineObsluznych, "NORMALNE", simulacia.agentObsluzneMiesta().getNormalneObsluzne()[i], 0.0});
+        for (int i = 0; i < simulacia.getPocetNormalObsluznych(); i++) {
+            odberModel.addRow(new Object[]{i+ simulacia.getPocetOnlineObsluznych(), "NORMALNE", simulacia.agentObsluzneMiesta().getNormalneObsluzne()[i], 0.0});
         }
-//odstarovanie simulacie pre kazdu strategiu
-        /*
         if (porovananieCheckbox.isSelected()) {
-            GUIPorovnanie porovanie = new GUIPorovnanie(pocetObsluz, pocetReplikacii);
+            GUIPorovnanie porovanie = new GUIPorovnanie(8, 20000);
             porovanie.startSimulation();
         }
-        simulatcia1.start();
-*/
     }
 
     public static void main(String[] args) {
@@ -295,46 +304,42 @@ public class GUIapp implements ISimDelegate {
 
     @Override
     public void refresh(Simulation simJadro) {
-        MySimulation sim =simulacia;
-        final double simulacnyCas = sim.currentTime();
-        casLabel.setText(formatTime(simulacnyCas + 9 * 60* 60));
-        if(!sim.getStavyOsob().isEmpty()) {
-            zakazniciModel.addRow(new Object[]{sim.getStavyOsob().get(0), sim.getStavyOsob().get(1), sim.getStavyOsob().get(2)});
-            sim.getStavyOsob().clear();
+        SwingUtilities.invokeLater(() -> {
+        if (!zrýchlenýBehRadioButton.isSelected() && simJadro.currentTime() > 0) {
+            spomalBeh();
+            MySimulation sim = simulacia;
+            final double simulacnyCas = sim.currentTime();
+            casLabel.setText(formatTime(simulacnyCas + 9 * 60 * 60));
+            if (!sim.getStavyOsob().isEmpty()) {
+                zakazniciModel.addRow(new Object[]{sim.getStavyOsob().get(0), sim.getStavyOsob().get(1), sim.getStavyOsob().get(2)});
+                sim.getStavyOsob().clear();
+            }
+
+            pocetLudiPredAutomatom.setText(String.valueOf(sim.agentAutomat().getFrontZakaznikov().size()));
+            for (int i = 0; i < sim.getPocetPokladni(); i++) {
+                pokladneModel.setValueAt(sim.agentPokladne().getPokladne()[i], i, 1);
+                pokladneModel.setValueAt(sim.agentPokladne().getRady()[i].size(), i, 2);
+                pokladneModel.setValueAt(Math.round((sim.agentPokladne().getPriemerVytazenostPokladni().get(i).sum()/simulacnyCas)*100) + "%", i, 3);
+                //pridat vytazenie
+            }
+            for (int i = 0; i < sim.agentObsluzneMiesta().getOnlineObsluzne().length; i++) {
+                odberModel.setValueAt(sim.agentObsluzneMiesta().getOnlineObsluzne()[i], i, 2);
+                odberModel.setValueAt(Math.round((sim.agentObsluzneMiesta().getPriemerVytazenostObsluznychOnline().get(i).sum()/simulacnyCas)*100) + "%", i, 3);
+
+            }
+            for (int i = 0; i < sim.agentObsluzneMiesta().getNormalneObsluzne().length; i++) {
+                odberModel.setValueAt(sim.agentObsluzneMiesta().getNormalneObsluzne()[i], i + sim.agentObsluzneMiesta().getOnlineObsluzne().length, 2);
+                odberModel.setValueAt(Math.round((sim.agentObsluzneMiesta().getPriemerVytazenostObsluznychOstatne().get(i).sum()/simulacnyCas)*100) + "%", i + sim.agentObsluzneMiesta().getOnlineObsluzne().length, 3);
+
+            }
+
+            pocetOnlineZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOnlineQueue().size()));
+            pocetOstatnychZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOsobyQueue().size()));
+            obsadenyAutomatLabel.setText(String.valueOf(!sim.agentAutomat().isAutomatIsEmpty()));
+
+            vytazenostAutomatuLabel.setText(Math.round(sim.agentAutomat().getPriemerVytazenieAutomatu().sampleSize()) + "%");
         }
-
-        pocetLudiPredAutomatom.setText(String.valueOf(sim.agentAutomat().getFrontZakaznikov().size()));
-        for (int i = 0; i < Config.pocetPokladni; i++) {
-            pokladneModel.setValueAt(sim.agentPokladne().getPokladne()[i], i, 1);
-            pokladneModel.setValueAt(sim.agentPokladne().getRady()[i].size(), i, 2);
-            pokladneModel.setValueAt(Math.round(sim.agentPokladne().getPriemerVytazenostPokladni().get(i).sampleSize()) + "%", i ,3);
-            //pridat vytazenie
-        }
-        for (int i = 0; i < sim.agentObsluzneMiesta().getOnlineObsluzne().length; i++) {
-            odberModel.setValueAt(sim.agentObsluzneMiesta().getOnlineObsluzne()[i], i, 2);
-            odberModel.setValueAt(Math.round(sim.agentObsluzneMiesta().getPriemerVytazenostObsluznychOnline().get(i).sampleSize()) + "%", i, 3);
-
-        }
-        for (int i = 0; i < sim.agentObsluzneMiesta().getNormalneObsluzne().length; i++) {
-            odberModel.setValueAt(sim.agentObsluzneMiesta().getNormalneObsluzne()[i], i+sim.agentObsluzneMiesta().getOnlineObsluzne().length, 2);
-            odberModel.setValueAt(Math.round(sim.agentObsluzneMiesta().getPriemerVytazenostObsluznychOstatne().get(i).sampleSize()) + "%", i+sim.agentObsluzneMiesta().getOnlineObsluzne().length, 3);
-
-        }
-
-        pocetOnlineZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOnlineQueue().size()));
-        pocetOstatnychZakaznikovRad.setText(String.valueOf(sim.agentObsluzneMiesta().getOsobyQueue().size()));
-        obsadenyAutomatLabel.setText(String.valueOf(!sim.agentAutomat().isAutomatIsEmpty()));
-
-        vytazenostAutomatuLabel.setText(Math.round(sim.agentAutomat().getPriemerVytazenieAutomatu().sampleSize())+ "%");
-
-
-        if (pomalyBeh) {
-
-        } else {
-
-        }
-
-
+    });
     }
     private void switchPanel(String panelName) {
         CardLayout cardLayout = (CardLayout) prepinaciPanel.getLayout();

@@ -42,20 +42,20 @@ public class AgentObsluzneMiesta extends Agent
 		// Setup component for the next replication
 		priemerVytazenostObsluznychOnline = new ArrayList<>();
 		priemerVytazenostObsluznychOstatne = new ArrayList<>();
-		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetOnlineObsluznych(); i++) {
 			priemerVytazenostObsluznychOnline.add(new Stat());
 		}
-		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetNormalObsluznych(); i++) {
 			priemerVytazenostObsluznychOstatne.add(new Stat());
 		}
 		priemerDlzkaRaduPredObsluzOnline = new WStat(mySim());
 		priemerDlzkaRaduPredObsluzNormal = new WStat(mySim());
-		normalneObsluzne = new boolean[Config.pocetNormalObsluznych];
-		onlineObsluzne = new boolean[Config.pocetOnlineObsluznych];
-		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
+		normalneObsluzne = new boolean[((MySimulation)mySim()).getPocetNormalObsluznych()];
+		onlineObsluzne = new boolean[((MySimulation)mySim()).getPocetOnlineObsluznych()];
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetNormalObsluznych(); i++) {
 			normalneObsluzne[i] = true;
 		}
-		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetOnlineObsluznych(); i++) {
 			onlineObsluzne[i] = true;
 		}
 		osobyQueue = new PriorityQueue<>(new OsobaComparatorPriority());

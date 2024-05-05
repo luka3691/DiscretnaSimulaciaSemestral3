@@ -35,7 +35,7 @@ public class DotazNaZaradenieDoRaduPriPokladniach extends Query
 		int idNajmensiRad = 0;
 		int pocetVNajmensomRade = Integer.MAX_VALUE;
 		int pocetRovankychRadov = 1;
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetPokladni(); i++) {
 			if (myAgent().getRady()[i].size() < pocetVNajmensomRade) {
 				idNajmensiRad = i;
 				pocetRovankychRadov = 1;
@@ -54,7 +54,7 @@ public class DotazNaZaradenieDoRaduPriPokladniach extends Query
 	public int zaradNahodneDoRadu() {
 		ArrayList<Integer> prazdneRady = new ArrayList<>();
 		int pocetVNajmensomRade = Integer.MAX_VALUE;
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < ((MySimulation)mySim()).getPocetPokladni(); i++) {
 			if (myAgent().getRady()[i].size() < pocetVNajmensomRade) {
 				prazdneRady.clear();
 				prazdneRady.add(i);

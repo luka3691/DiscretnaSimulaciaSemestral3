@@ -8,8 +8,7 @@ import simulation.MySimulation;
 import java.util.ArrayList;
 
 public class Osoba extends Entity {
-    private UniformContinuousRNG typZakaznikaGenerator = new UniformContinuousRNG(0.0, 1.0);
-    private UniformContinuousRNG nechaTovarNaObsluznom = new UniformContinuousRNG(0.0, 1.0);
+
     private double casPrichodu;
     private StavyOsoby stav;
 
@@ -22,33 +21,21 @@ public class Osoba extends Entity {
 
 
 
-    public Osoba(Simulation sim) {
+    public Osoba(Simulation sim, double typZakaznikaRandom, double nechalTovarNa) {
         super(sim);
+        this.nechalTovarNaVydajni = nechalTovarNa < 0.6;
+        if (typZakaznikaRandom < 0.5) {
+            this.typZakaznika = TypZakaznika.BEZNY;
+        } else if (typZakaznikaRandom < 0.65) {
+            this.typZakaznika = TypZakaznika.ZMLUVNY;
+        } else {
+            this.typZakaznika = TypZakaznika.ONLINE;
+        }
         this.stav = StavyOsoby.PRICHOD;
         this.casPrichodu = sim.currentTime();
-        this.typZakaznika = this.generateTypZakaznika();
-        this.nechalTovarNaVydajni = this.generateNechaToavrNaObsluznom();
 
     }
-    private boolean generateNechaToavrNaObsluznom() {
-        double p = nechaTovarNaObsluznom.sample();
-        if (p < 0.6) {
-            return true;
-        }else {
-            return false;
-        }
-    }
 
-    private TypZakaznika generateTypZakaznika() {
-        double p = typZakaznikaGenerator.sample();
-        if (p < 0.5) {
-            return TypZakaznika.BEZNY;
-        } else if (p < 0.65) {
-            return TypZakaznika.ZMLUVNY;
-        } else {
-            return TypZakaznika.ONLINE;
-        }
-    }
 
     public void setStav(StavyOsoby stav) {
         this.stav = stav;

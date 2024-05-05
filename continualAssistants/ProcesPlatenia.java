@@ -11,8 +11,8 @@ import OSPABA.Process;
 public class ProcesPlatenia extends Process
 {
 	private UniformContinuousRNG generovanieTypuPlatby = new UniformContinuousRNG(0.0, 1.0);
-	private UniformDiscreteRNG trvaniePlatbyHotovost = new UniformDiscreteRNG(180/60, 480/60);
-	private UniformDiscreteRNG trvaniePlatbyKrata = new UniformDiscreteRNG(180/60, 360/60);
+	private UniformDiscreteRNG trvaniePlatbyHotovost = new UniformDiscreteRNG(180, 480);
+	private UniformDiscreteRNG trvaniePlatbyKrata = new UniformDiscreteRNG(180, 360);
 	public ProcesPlatenia(int id, Simulation mySim, CommonAgent myAgent)
 	{
 		super(id, mySim, myAgent);

@@ -29,14 +29,6 @@ public class ManagerPredajna extends Manager
 		}
 	}
 
-	//meta! sender="AgentModelu", id="20", type="Notice"
-	public void processInit(MessageForm message)
-	{
-		MyMessage initAutomat = new MyMessage((MyMessage) message);
-		initAutomat.setAddressee(myAgent().findAssistant(Id.planovacPrichodov));
-		startContinualAssistant(initAutomat);
-	}
-
 	//meta! sender="AgentObsluzneMiesta", id="46", type="Response"
 	public void processObsluhaZakaznika(MessageForm message)
 	{
@@ -141,6 +133,14 @@ public class ManagerPredajna extends Manager
 		notice(copy);
 	}
 
+	//meta! sender="AgentModelu", id="160", type="Notice"
+	public void processInit(MessageForm message)
+	{
+		MyMessage initAutomat = new MyMessage((MyMessage) message);
+		initAutomat.setAddressee(myAgent().findAssistant(Id.planovacPrichodov));
+		startContinualAssistant(initAutomat);
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -153,10 +153,6 @@ public class ManagerPredajna extends Manager
 		{
 		case Mc.platenieUPokoladne:
 			processPlatenieUPokoladne(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
 		break;
 
 		case Mc.obsluhaZakaznika:
@@ -194,6 +190,10 @@ public class ManagerPredajna extends Manager
 
 		case Mc.zadavanieDoAutomatu:
 			processZadavanieDoAutomatu(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
 		break;
 
 		default:

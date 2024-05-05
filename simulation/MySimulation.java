@@ -12,7 +12,10 @@ import java.util.function.Supplier;
 
 public class MySimulation extends ConcurrentSimulation
 {
-
+	private final int pocetObsluznychMiest;
+	private final int pocetOnlineObsluznych;
+	private final int pocetNormalObsluznych;
+	private final int pocetPokladni;
 	private Stat priemerDlzkaRaduAutomatCelkove;
 	private Stat priemerPocetLudiCelkovy;
 	private Stat priemerCasVObchodeCelkovy;
@@ -37,8 +40,12 @@ public class MySimulation extends ConcurrentSimulation
 	private int pocetObsluznych;
 	private ArrayList<String> stavyOsob;
 
-	public MySimulation()
+	public MySimulation(int pocetObsluznychMiest, int pocetPokladni)
 	{
+		this.pocetObsluznychMiest = pocetObsluznychMiest;
+		this.pocetPokladni = pocetPokladni;
+		this.pocetOnlineObsluznych =  pocetObsluznychMiest / 3;
+		this.pocetNormalObsluznych = pocetObsluznychMiest - this.pocetOnlineObsluznych;
 		init();
 	}
 
@@ -54,7 +61,7 @@ public class MySimulation extends ConcurrentSimulation
 
 	@Override
 	protected ConcurrentSimulation createCopy() {
-		return new MySimulation();
+		return new MySimulation(pocetObsluznychMiest, pocetPokladni);
 	}
 
 	@Override
@@ -77,14 +84,14 @@ public class MySimulation extends ConcurrentSimulation
 		priemerDlzkaRaduPredObsluzNormalCelkove = new Stat();
 
 
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < pocetPokladni; i++) {
 			priemerVytazenostPokladniCelkove.add(new Stat());
 			priemerDlzkaRadovPriPokladniachCelkove.add(new Stat());
 		}
-		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
+		for (int i = 0; i < pocetOnlineObsluznych; i++) {
 			priemerVytazenostObsluznychOnlineCelkove.add(new Stat());
 		}
-		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
+		for (int i = 0; i < pocetNormalObsluznych; i++) {
 			priemerVytazenostObsluznychOstatneCelkove.add(new Stat());
 		}
 
@@ -112,21 +119,23 @@ public class MySimulation extends ConcurrentSimulation
 		priemerCasVObchodeCelkovy.addSample(agentOkolia().getPriemerCasVObchode().mean());
 		priemerCakanieVRadePredAutomatomCalkovy.addSample(agentAutomat().getPriemerCakanieVRadePredAutomatom().mean());
 		priemerPoslednyOdchod.addSample(agentOkolia().getCasOdchoduPosledneho());
-		priemerVytazenieAutomatuCelkove.addSample(agentAutomat().getPriemerVytazenieAutomatu().mean());
+		priemerVytazenieAutomatuCelkove.addSample(agentAutomat().getPriemerVytazenieAutomatu().sum()/Config.casKoncaVydavaniaListkov);
+		agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzOnline().updateAfterReplication();
+		agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzNormal().updateAfterReplication();
 		priemerDlzkaRaduPredObsluzOnlineCelkove.addSample(agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzOnline().mean());
 		priemerDlzkaRaduPredObsluzNormalCelkove.addSample(agentObsluzneMiesta().getPriemerDlzkaRaduPredObsluzNormal().mean());
 		pocetObsluzenychZakaznikovCelkove.addSample(agentOkolia().pocetObsluzenychZakaznikov());
 		//treba rozoznat celkove a iba co sa dostali do modelu statistiky
 
-		for (int i = 0; i < Config.pocetPokladni; i++) {
-			priemerVytazenostPokladniCelkove.get(i).addSample(agentPokladne().getPriemerVytazenostPokladni().get(i).sampleSize());
+		for (int i = 0; i < pocetPokladni; i++) {
+			priemerVytazenostPokladniCelkove.get(i).addSample(agentPokladne().getPriemerVytazenostPokladni().get(i).sum()/Config.casKoncaVydavaniaListkov);
 			priemerDlzkaRadovPriPokladniachCelkove.get(i).addSample(agentPokladne().getPriemerDlzkaRadovPriPokladniach().get(i).mean());
 		}
-		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
-			priemerVytazenostObsluznychOnlineCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOnline().get(i).sampleSize());
+		for (int i = 0; i < pocetOnlineObsluznych; i++) {
+			priemerVytazenostObsluznychOnlineCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOnline().get(i).sum()/Config.casKoncaVydavaniaListkov);
 		}
-		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
-			priemerVytazenostObsluznychOstatneCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOstatne().get(i).sampleSize());
+		for (int i = 0; i < pocetNormalObsluznych; i++) {
+			priemerVytazenostObsluznychOstatneCelkove.get(i).addSample(agentObsluzneMiesta().getPriemerVytazenostObsluznychOstatne().get(i).sum()/Config.casKoncaVydavaniaListkov);
 		}
 
 	}
@@ -142,14 +151,14 @@ public class MySimulation extends ConcurrentSimulation
 		System.out.println("Priemer cakanie pred automatom: " + priemerCakanieVRadePredAutomatomCalkovy.mean());
 		System.out.println("Posledny cas odchodu: " + priemerPoslednyOdchod.mean());
 		System.out.println("Vytazenie automatau:" + priemerVytazenieAutomatuCelkove.mean()*100);
-		for (int i = 0; i < Config.pocetPokladni; i++) {
+		for (int i = 0; i < pocetPokladni; i++) {
 			System.out.println(priemerVytazenostPokladniCelkove.get(i).mean()*100);
 			System.out.println(priemerDlzkaRadovPriPokladniachCelkove.get(i).mean());
 		}
-		for (int i = 0; i < Config.pocetOnlineObsluznych; i++) {
+		for (int i = 0; i < pocetOnlineObsluznych; i++) {
 			System.out.println(priemerVytazenostObsluznychOnlineCelkove.get(i).mean());
 		}
-		for (int i = 0; i < Config.pocetNormalObsluznych; i++) {
+		for (int i = 0; i < pocetNormalObsluznych; i++) {
 			System.out.println(priemerVytazenostObsluznychOstatneCelkove.get(i).mean());
 		}
 		System.out.println(Arrays.toString(priemerCasVObchodeCelkovy.confidenceInterval_95()));
@@ -221,6 +230,22 @@ public class MySimulation extends ConcurrentSimulation
 	}
 	public ArrayList<String> getStavyOsob() {
 		return stavyOsob;
+	}
+
+	public int getPocetObsluznychMiest() {
+		return pocetObsluznychMiest;
+	}
+
+	public int getPocetOnlineObsluznych() {
+		return pocetOnlineObsluznych;
+	}
+
+	public int getPocetNormalObsluznych() {
+		return pocetNormalObsluznych;
+	}
+
+	public int getPocetPokladni() {
+		return pocetPokladni;
 	}
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"

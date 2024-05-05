@@ -19,12 +19,8 @@ public class DotazZaradNaObsluzne extends Query
 	{
 		MyMessage sprava = (MyMessage) message;
 		int cisloObsluzneho = getIDVolneObsluzne(sprava.getZakaznik());
-		if (cisloObsluzneho != -1) {
-			((MyMessage)message).getZakaznik().setIdObsluzneho(cisloObsluzneho);
-			((MyMessage)message).setCisloObsluzneho(cisloObsluzneho);
-		} else {
-			((MyMessage)message).setCisloObsluzneho(cisloObsluzneho);
-		}
+		((MyMessage)message).getZakaznik().setIdObsluzneho(cisloObsluzneho);
+		((MyMessage)message).setCisloObsluzneho(cisloObsluzneho);
 
 	}
 
@@ -35,11 +31,13 @@ public class DotazZaradNaObsluzne extends Query
 	}
 
 	public int getIDVolneObsluzne(Osoba osoba) {
+		int idObsluzneho;
 		if (osoba.getTypZakaznika() == TypZakaznika.ONLINE){
-			return getVolneOnline();
+			idObsluzneho =  getVolneOnline();
 		} else {
-			return getVolneNormalne();
+			idObsluzneho = getVolneNormalne();
 		}
+		return idObsluzneho;
 	}
 
 	private int getVolneNormalne() {
