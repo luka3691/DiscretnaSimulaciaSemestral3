@@ -43,8 +43,8 @@ public class AgentAutomat extends Agent
 	private void init()
 	{
 		new ManagerAutomat(Id.managerAutomat, mySim(), this);
-		new ZatvaraniePredajneAutomat(Id.zatvaraniePredajneAutomat, mySim(), this);
 		new ProcesZadavaniaDoAutomatu(Id.procesZadavaniaDoAutomatu, mySim(), this);
+		new ZatvaraniePredajneAutomat(Id.zatvaraniePredajneAutomat, mySim(), this);
 		addOwnMessage(Mc.vyhodZRadu);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.zadavanieDoAutomatu);

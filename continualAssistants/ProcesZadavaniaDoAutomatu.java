@@ -9,6 +9,9 @@ import OSPABA.Process;
 //meta! id="30"
 public class ProcesZadavaniaDoAutomatu extends Process
 {
+
+	private UniformContinuousRNG nechaTovarNaObsluznom = new UniformContinuousRNG(0.0, 1.0);
+	private UniformContinuousRNG typZakaznikaGenerator = new UniformContinuousRNG(0.0, 1.0);
 	private UniformContinuousRNG casZadavaniaDoAutomatu = new UniformContinuousRNG(30.0, 120.0);
 	public ProcesZadavaniaDoAutomatu(int id, Simulation mySim, CommonAgent myAgent)
 	{
@@ -29,6 +32,10 @@ public class ProcesZadavaniaDoAutomatu extends Process
 		double zadavanieDoAutomatu = casZadavaniaDoAutomatu.sample();
 		myAgent().getPriemerCakanieVRadePredAutomatom().addSample(mySim().currentTime() - ((MyMessage)message).getZakaznik().getCasPrichodu());
 		myAgent().getPriemerVytazenieAutomatu().addSample(zadavanieDoAutomatu);
+		if (!Config.zmenenyTok) {
+			((MyMessage) message).getZakaznik().setTypZakaznika(typZakaznikaGenerator.sample());
+		}
+		((MyMessage) message).getZakaznik().nechalTovarNaVydajni(nechaTovarNaObsluznom.sample());
  		hold(zadavanieDoAutomatu, message); // naplanuje ukoncenie nakupu na cas simCas + casNakupu
 	}
 
@@ -52,12 +59,12 @@ public class ProcesZadavaniaDoAutomatu extends Process
 	{
 		switch (message.code())
 		{
-		case Mc.start:
-			processStart(message);
-		break;
-
 		case Mc.zadavanieDoAutomatuUkoncene:
 			processZadavanieDoAutomatuUkoncene(message);
+		break;
+
+		case Mc.start:
+			processStart(message);
 		break;
 
 		default:

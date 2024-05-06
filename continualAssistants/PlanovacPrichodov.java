@@ -5,15 +5,15 @@ import OSPRNG.ExponentialRNG;
 import OSPRNG.UniformContinuousRNG;
 import Osoby.Osoba;
 import Osoby.StavyOsoby;
+import Osoby.TypZakaznika;
 import simulation.*;
 import agents.*;
 
 //meta! id="27"
 public class PlanovacPrichodov extends Scheduler
 {
-	private ExponentialRNG prichodLudiBezny = new ExponentialRNG((double)60*60/30);
-	private UniformContinuousRNG typZakaznikaGenerator = new UniformContinuousRNG(0.0, 1.0);
-	private UniformContinuousRNG nechaTovarNaObsluznom = new UniformContinuousRNG(0.0, 1.0);
+	private ExponentialRNG prichodLudiBezny = new ExponentialRNG(((double)60*60/30)*Config.zvysenyTok);
+	private ExponentialRNG prichodLudiBeznyZapnuty = new ExponentialRNG(((double)60*60/15)*Config.zvysenyTok);
 	//private ExponentialRNG prichodLudiBezny = new ExponentialRNG((double)60*60/15);
 	public PlanovacPrichodov(int id, Simulation mySim, CommonAgent myAgent)
 	{
@@ -31,20 +31,31 @@ public class PlanovacPrichodov extends Scheduler
 	public void processStart(MessageForm message)
 	{
 		message.setCode(Mc.novyZakaznik);
-		hold(prichodLudiBezny.sample(), message);
+		if (Config.zmenenyTok) {
+			hold(prichodLudiBeznyZapnuty.sample(), message);
+		} else {
+			hold(prichodLudiBezny.sample(), message);
+		}
+
 	}
 
 	//meta! sender="AgentOkolia", id="29", type="Notice"
 	public void processNovyZakaznik(MessageForm message)
 	{
-		double dalsiPrichod = prichodLudiBezny.sample();
+		double dalsiPrichod;
+		if (Config.zmenenyTok) {
+			dalsiPrichod = prichodLudiBeznyZapnuty.sample();
+		} else {
+			dalsiPrichod = prichodLudiBezny.sample();
+		}
 		if (mySim().currentTime() + dalsiPrichod < Config.casKoncaVydavaniaListkov) {
 			MyMessage msg = new MyMessage((MyMessage)message);
 			hold(dalsiPrichod, msg);
-		} else {
-			System.out.println("here");
 		}
-		((MyMessage)message).setZakaznik(new Osoba(mySim(), typZakaznikaGenerator.sample(), nechaTovarNaObsluznom.sample()));
+		((MyMessage)message).setZakaznik(new Osoba(mySim()));
+		if (Config.zmenenyTok) {
+			((MyMessage)message).getZakaznik().setTypZakaznika(TypZakaznika.BEZNY);
+		}
 		((MyMessage)message).getZakaznik().setStav(StavyOsoby.PRICHOD);
 		assistantFinished(message);
 	}
@@ -63,12 +74,12 @@ public class PlanovacPrichodov extends Scheduler
 	{
 		switch (message.code())
 		{
-		case Mc.start:
-			processStart(message);
-		break;
-
 		case Mc.novyZakaznik:
 			processNovyZakaznik(message);
+		break;
+
+		case Mc.start:
+			processStart(message);
 		break;
 
 		default:

@@ -64,12 +64,12 @@ public class PlanovacPrestavkaObsluzne extends Scheduler
 			processUkonciZablokovanie(message);
 		break;
 
-		case Mc.start:
-			processStart(message);
-		break;
-
 		case Mc.zablokujObsluzne:
 			processZablokujObsluzne(message);
+		break;
+
+		case Mc.start:
+			processStart(message);
 		break;
 
 		default:

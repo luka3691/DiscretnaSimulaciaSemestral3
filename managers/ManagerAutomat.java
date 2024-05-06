@@ -133,6 +133,14 @@ public class ManagerAutomat extends Manager
 	{
 		switch (message.code())
 		{
+		case Mc.zadavanieDoAutomatu:
+			processZadavanieDoAutomatu(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
+		break;
+
 		case Mc.finish:
 			switch (message.sender().id())
 			{
@@ -146,16 +154,8 @@ public class ManagerAutomat extends Manager
 			}
 		break;
 
-		case Mc.init:
-			processInit(message);
-		break;
-
 		case Mc.uvolnenieAutomatu:
 			processUvolnenieAutomatu(message);
-		break;
-
-		case Mc.zadavanieDoAutomatu:
-			processZadavanieDoAutomatu(message);
 		break;
 
 		case Mc.zablokovanieAutomatu:

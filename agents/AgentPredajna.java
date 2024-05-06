@@ -34,8 +34,8 @@ public class AgentPredajna extends Agent
 		addOwnMessage(Mc.obsluhaZakaznika);
 		addOwnMessage(Mc.uvolnenieObsluzneho);
 		addOwnMessage(Mc.zadavanieDoAutomatu);
-		addOwnMessage(Mc.navratZPokladne);
 		addOwnMessage(Mc.spatnePrevzatie);
+		addOwnMessage(Mc.navratZPokladne);
 		addOwnMessage(Mc.endObednejPrestavky);
 		addOwnMessage(Mc.prichodZObsluzneho);
 		addOwnMessage(Mc.platenieUPokoladne);

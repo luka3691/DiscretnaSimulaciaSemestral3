@@ -629,10 +629,26 @@
           </component>
           <component id="705d2" class="javax.swing.JCheckBox" binding="prestavkaCheckbox">
             <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Zapnúť obednú prestávku"/>
+            </properties>
+          </component>
+          <component id="525b7" class="javax.swing.JCheckBox" binding="zmenenieTokuCheckbox">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Zmenenie toku zákazníkov"/>
+            </properties>
+          </component>
+          <component id="27f46" class="javax.swing.JCheckBox" binding="zvysenieTokuCheckbox">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Zvýšenie toku o 30%"/>
             </properties>
           </component>
         </children>

@@ -144,8 +144,8 @@ public class ManagerPokladne extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.prichodZObsluzneho:
-			processPrichodZObsluzneho(message);
+		case Mc.init:
+			processInit(message);
 		break;
 
 		case Mc.finish:
@@ -161,10 +161,6 @@ public class ManagerPokladne extends Manager
 			}
 		break;
 
-		case Mc.zablokujPokladne:
-			processZablokujPokladne(message);
-		break;
-
 		case Mc.platenieUPokoladne:
 			processPlatenieUPokoladne(message);
 		break;
@@ -173,8 +169,12 @@ public class ManagerPokladne extends Manager
 			processStartObednejPrestavky(message);
 		break;
 
-		case Mc.init:
-			processInit(message);
+		case Mc.prichodZObsluzneho:
+			processPrichodZObsluzneho(message);
+		break;
+
+		case Mc.zablokujPokladne:
+			processZablokujPokladne(message);
 		break;
 
 		default:

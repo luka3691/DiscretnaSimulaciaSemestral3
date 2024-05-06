@@ -63,17 +63,17 @@ public class AgentPokladne extends Agent
 	private void init()
 	{
 		new ManagerPokladne(Id.managerPokladne, mySim(), this);
-		new PlanovacPrestavkaPokladne(Id.planovacPrestavkaPokladne, mySim(), this);
-		new DotazNaZaradenieDoRaduPriPokladniach(Id.dotazNaZaradenieDoRaduPriPokladniach, mySim(), this);
-		new ProcesPlatenia(Id.procesPlatenia, mySim(), this);
 		new DotazNaZaradneieDoPokladne(Id.dotazNaZaradneieDoPokladne, mySim(), this);
+		new DotazNaZaradenieDoRaduPriPokladniach(Id.dotazNaZaradenieDoRaduPriPokladniach, mySim(), this);
+		new PlanovacPrestavkaPokladne(Id.planovacPrestavkaPokladne, mySim(), this);
+		new ProcesPlatenia(Id.procesPlatenia, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.platenieHotove);
 		addOwnMessage(Mc.startObednejPrestavky);
 		addOwnMessage(Mc.prichodZObsluzneho);
 		addOwnMessage(Mc.ukonciZablokovanie);
-		addOwnMessage(Mc.zablokujPokladne);
 		addOwnMessage(Mc.platenieUPokoladne);
+		addOwnMessage(Mc.zablokujPokladne);
 	}
 	//meta! tag="end"
 

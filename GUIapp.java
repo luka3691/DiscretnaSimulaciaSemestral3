@@ -76,6 +76,8 @@ public class GUIapp implements ISimDelegate {
     private JLabel vytazenieObsluznychIntervalLabel;
     private JLabel dlzkyRadovPriPokladniachIntervalLabel;
     private JLabel priemerObsluzenychIntervalLabel;
+    private JCheckBox zmenenieTokuCheckbox;
+    private JCheckBox zvysenieTokuCheckbox;
 
     int pocetPokladni;
     int pocetObsluz ;
@@ -109,11 +111,24 @@ public class GUIapp implements ISimDelegate {
                     simulacia.simulateAsync(Config.pocetReplikacii, Config.trvanieReplikacie);
                     if (prestavkaCheckbox.isSelected()) {
                         Config.budePrestavka = true;
+                    } else {
+                        Config.budePrestavka = false;
+                    }
+                    if (zmenenieTokuCheckbox.isSelected()) {
+                        Config.zmenenyTok = true;
+                    } else {
+                        Config.zmenenyTok = false;
+                    }
+                    if (zvysenieTokuCheckbox.isSelected()) {
+                        Config.zvysenyTok = 1.3;
+                    } else {
+                        Config.zvysenyTok = 1.0;
                     }
                     if (porovananieCheckbox.isSelected()) {
                         GUIPorovnanie porovanie = new GUIPorovnanie(pocetObsluznychMiest, Config.pocetReplikacii);
                         porovanie.startSimulation();
                     }
+
                     //startSimulation();
                     double speedMax = 20 * .1;
                     double speedValue = 10 * .1;
@@ -124,6 +139,8 @@ public class GUIapp implements ISimDelegate {
                     stopButton.setEnabled(true);
                     porovananieCheckbox.setEnabled(false);
                     prestavkaCheckbox.setEnabled(false);
+                    zmenenieTokuCheckbox.setEnabled(false);
+                    zvysenieTokuCheckbox.setEnabled(false);
 
                 }
                 catch (NumberFormatException i) {
@@ -153,6 +170,8 @@ public class GUIapp implements ISimDelegate {
                 stopButton.setEnabled(false);
                 isStopped.set(true);
                 prestavkaCheckbox.setEnabled(true);
+                zmenenieTokuCheckbox.setEnabled(true);
+                zvysenieTokuCheckbox.setEnabled(true);
             }
         });
 

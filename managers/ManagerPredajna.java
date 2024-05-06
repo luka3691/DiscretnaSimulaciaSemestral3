@@ -163,20 +163,28 @@ public class ManagerPredajna extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.obsluhaZakaznika:
-			processObsluhaZakaznika(message);
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
+		case Mc.zakaznikVPredajni:
+			processZakaznikVPredajni(message);
+		break;
+
+		case Mc.init:
+			processInit(message);
+		break;
+
+		case Mc.platenieUPokoladne:
+			processPlatenieUPokoladne(message);
 		break;
 
 		case Mc.uvolnenieObsluzneho:
 			processUvolnenieObsluzneho(message);
 		break;
 
-		case Mc.prichodZObsluzneho:
-			processPrichodZObsluzneho(message);
-		break;
-
-		case Mc.navratZPokladne:
-			processNavratZPokladne(message);
+		case Mc.zadavanieDoAutomatu:
+			processZadavanieDoAutomatu(message);
 		break;
 
 		case Mc.endObednejPrestavky:
@@ -192,28 +200,20 @@ public class ManagerPredajna extends Manager
 			}
 		break;
 
-		case Mc.zakaznikVPredajni:
-			processZakaznikVPredajni(message);
+		case Mc.prichodZObsluzneho:
+			processPrichodZObsluzneho(message);
 		break;
 
-		case Mc.spatnePrevzatie:
-			processSpatnePrevzatie(message);
+		case Mc.obsluhaZakaznika:
+			processObsluhaZakaznika(message);
+		break;
+
+		case Mc.navratZPokladne:
+			processNavratZPokladne(message);
 		break;
 
 		case Mc.zablokovanieAutomatu:
 			processZablokovanieAutomatu(message);
-		break;
-
-		case Mc.platenieUPokoladne:
-			processPlatenieUPokoladne(message);
-		break;
-
-		case Mc.init:
-			processInit(message);
-		break;
-
-		case Mc.zadavanieDoAutomatu:
-			processZadavanieDoAutomatu(message);
 		break;
 
 		default:

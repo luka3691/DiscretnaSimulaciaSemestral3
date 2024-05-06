@@ -34,6 +34,14 @@ public class ManagerOkolia extends Manager
 		MyMessage prichody = new MyMessage((MyMessage) message);
 		prichody.setAddressee((myAgent()).findAssistant(Id.planovacPrichodov));
 		startContinualAssistant(prichody);
+		if (Config.zmenenyTok) {
+			MyMessage prichodyOnline = new MyMessage((MyMessage) message);
+			prichodyOnline.setAddressee((myAgent()).findAssistant(Id.planovacPrichodovOnline));
+			startContinualAssistant(prichodyOnline);
+			MyMessage prichodyZmluvny = new MyMessage((MyMessage) message);
+			prichodyZmluvny.setAddressee((myAgent()).findAssistant(Id.planovacPrichodovBizinis));
+			startContinualAssistant(prichodyZmluvny);
+		}
 	}
 
 	//meta! sender="PlanovacPrichodov", id="28", type="Finish"
@@ -68,6 +76,16 @@ public class ManagerOkolia extends Manager
 	{
 	}
 
+	//meta! sender="PlanovacPrichodovBizinis", id="184", type="Finish"
+	public void processFinishPlanovacPrichodovBizinis(MessageForm message)
+	{
+	}
+
+	//meta! sender="PlanovacPrichodovOnline", id="182", type="Finish"
+	public void processFinishPlanovacPrichodovOnline(MessageForm message)
+	{
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -81,12 +99,20 @@ public class ManagerOkolia extends Manager
 		case Mc.finish:
 			switch (message.sender().id())
 			{
+			case Id.zatvaraniePredajneOkolie:
+				processFinishZatvaraniePredajneOkolie(message);
+			break;
+
 			case Id.planovacPrichodov:
 				processFinishPlanovacPrichodov(message);
 			break;
 
-			case Id.zatvaraniePredajneOkolie:
-				processFinishZatvaraniePredajneOkolie(message);
+			case Id.planovacPrichodovBizinis:
+				processFinishPlanovacPrichodovBizinis(message);
+			break;
+
+			case Id.planovacPrichodovOnline:
+				processFinishPlanovacPrichodovOnline(message);
 			break;
 			}
 		break;

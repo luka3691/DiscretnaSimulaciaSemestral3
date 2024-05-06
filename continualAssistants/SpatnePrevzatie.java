@@ -56,12 +56,12 @@ public class SpatnePrevzatie extends Process
 	{
 		switch (message.code())
 		{
-		case Mc.spatnePrevzatieHotove:
-			processSpatnePrevzatieHotove(message);
-		break;
-
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.spatnePrevzatieHotove:
+			processSpatnePrevzatieHotove(message);
 		break;
 
 		default:

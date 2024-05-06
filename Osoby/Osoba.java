@@ -21,16 +21,9 @@ public class Osoba extends Entity {
 
 
 
-    public Osoba(Simulation sim, double typZakaznikaRandom, double nechalTovarNa) {
+    public Osoba(Simulation sim) {
         super(sim);
-        this.nechalTovarNaVydajni = nechalTovarNa < 0.6;
-        if (typZakaznikaRandom < 0.5) {
-            this.typZakaznika = TypZakaznika.BEZNY;
-        } else if (typZakaznikaRandom < 0.65) {
-            this.typZakaznika = TypZakaznika.ZMLUVNY;
-        } else {
-            this.typZakaznika = TypZakaznika.ONLINE;
-        }
+
         this.stav = StavyOsoby.PRICHOD;
         this.casPrichodu = sim.currentTime();
 
@@ -77,6 +70,23 @@ public class Osoba extends Entity {
 
     public void setNadrozmernaObjednavka(boolean nadrozmernaObjednavka) {
         this.nechalTovarNaVydajni = nadrozmernaObjednavka;
+    }
+
+    public void nechalTovarNaVydajni(double random) {
+        this.nechalTovarNaVydajni = random < 0.6;
+    }
+
+    public void setTypZakaznika(double random) {
+        if (random < 0.5) {
+            this.typZakaznika = TypZakaznika.BEZNY;
+        } else if (random < 0.65) {
+            this.typZakaznika = TypZakaznika.ZMLUVNY;
+        } else {
+            this.typZakaznika = TypZakaznika.ONLINE;
+        }
+    }
+    public void setTypZakaznika(TypZakaznika typ) {
+        this.typZakaznika = typ;
     }
 
     public int getID() {

@@ -59,16 +59,16 @@ public class PlanovacPrestavkaPokladne extends Scheduler
 	{
 		switch (message.code())
 		{
-		case Mc.zablokujPokladne:
-			processZablokujPokladne(message);
-		break;
-
 		case Mc.ukonciZablokovanie:
 			processUkonciZablokovanie(message);
 		break;
 
 		case Mc.start:
 			processStart(message);
+		break;
+
+		case Mc.zablokujPokladne:
+			processZablokujPokladne(message);
 		break;
 
 		default:

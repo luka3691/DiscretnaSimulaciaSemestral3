@@ -74,19 +74,19 @@ public class AgentObsluzneMiesta extends Agent
 	private void init()
 	{
 		new ManagerObsluzneMiesta(Id.managerObsluzneMiesta, mySim(), this);
+		new ProcesObsluhy(Id.procesObsluhy, mySim(), this);
 		new DotazZmestiSaDoObsluznych(Id.dotazZmestiSaDoObsluznych, mySim(), this);
+		new PlanovacPrestavkaObsluzne(Id.planovacPrestavkaObsluzne, mySim(), this);
 		new DotazZaradNaObsluzne(Id.dotazZaradNaObsluzne, mySim(), this);
 		new SpatnePrevzatie(Id.spatnePrevzatie, mySim(), this);
-		new PlanovacPrestavkaObsluzne(Id.planovacPrestavkaObsluzne, mySim(), this);
-		new ProcesObsluhy(Id.procesObsluhy, mySim(), this);
 		addOwnMessage(Mc.init);
 		addOwnMessage(Mc.obsluhaZakaznika);
 		addOwnMessage(Mc.spatnePrevzatieHotove);
 		addOwnMessage(Mc.zablokujObsluzne);
-		addOwnMessage(Mc.spatnePrevzatie);
 		addOwnMessage(Mc.navratZPokladne);
-		addOwnMessage(Mc.ukonciZablokovanie);
+		addOwnMessage(Mc.spatnePrevzatie);
 		addOwnMessage(Mc.obsluhaHotova);
+		addOwnMessage(Mc.ukonciZablokovanie);
 	}
 	//meta! tag="end"
 

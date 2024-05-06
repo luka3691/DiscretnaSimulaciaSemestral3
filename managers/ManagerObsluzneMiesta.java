@@ -255,41 +255,41 @@ public class ManagerObsluzneMiesta extends Manager
 	{
 		switch (message.code())
 		{
-		case Mc.finish:
-			switch (message.sender().id())
-			{
-			case Id.procesObsluhy:
-				processFinishProcesObsluhy(message);
-			break;
-
-			case Id.planovacPrestavkaObsluzne:
-				processFinishPlanovacPrestavkaObsluzne(message);
-			break;
-
-			case Id.spatnePrevzatie:
-				processFinishSpatnePrevzatie(message);
-			break;
-			}
-		break;
-
-		case Mc.obsluhaZakaznika:
-			processObsluhaZakaznika(message);
-		break;
-
-		case Mc.zablokujObsluzne:
-			processZablokujObsluzne(message);
-		break;
-
-		case Mc.spatnePrevzatie:
-			processSpatnePrevzatie(message);
-		break;
-
 		case Mc.init:
 			processInit(message);
 		break;
 
 		case Mc.navratZPokladne:
 			processNavratZPokladne(message);
+		break;
+
+		case Mc.spatnePrevzatie:
+			processSpatnePrevzatie(message);
+		break;
+
+		case Mc.finish:
+			switch (message.sender().id())
+			{
+			case Id.spatnePrevzatie:
+				processFinishSpatnePrevzatie(message);
+			break;
+
+			case Id.planovacPrestavkaObsluzne:
+				processFinishPlanovacPrestavkaObsluzne(message);
+			break;
+
+			case Id.procesObsluhy:
+				processFinishProcesObsluhy(message);
+			break;
+			}
+		break;
+
+		case Mc.zablokujObsluzne:
+			processZablokujObsluzne(message);
+		break;
+
+		case Mc.obsluhaZakaznika:
+			processObsluhaZakaznika(message);
 		break;
 
 		default:
